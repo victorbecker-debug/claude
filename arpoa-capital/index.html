@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Árpoa Capital — capital, direção, conexões e execução para transformar investimento em crescimento.">
+<title>Árpoa Capital — presença que move</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* =========================================================================
+   DESIGN TOKENS
+   ========================================================================= */
+:root {
+  /* — Cores da marca — */
+  --green-950:#08221A;
+  --green-900:#0B2C20;   /* fundo mais profundo (modelo de atuação) */
+  --green-850:#0E3527;
+  --green-800:#103B2C;   /* fundo do hero */
+  --green-700:#164A38;   /* cards sobre verde */
+  --green-600:#1E5A44;
+  --cream:#F7EEDE;       /* fundo quem somos */
+  --cream-100:#FBF6EC;
+
+  --amber:#DFA45C;       /* única cor de destaque */
+  --amber-strong:#D2933F;
+
+  --ink:#1C2823;         /* títulos sobre claro */
+  --gray-700:#4C574F;    /* corpo sobre claro */
+  --gray-500:#727D75;    /* corpo suave */
+  --gray-400:#97A099;
+
+  --on-dark:#ECF1ED;             /* texto sobre verde */
+  --on-dark-soft:rgba(236,241,237,.70);
+  --on-dark-faint:rgba(236,241,237,.14);
+
+  --line:rgba(20,40,30,.12);     /* bordas sutis claro */
+  --line-dark:rgba(255,255,255,.14);
+  --bg:#FFFFFF;
+
+  /* — Tipografia — */
+  --font-serif:"Fraunces",Georgia,"Times New Roman",serif;
+  --font-sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+
+  /* — Layout / espaçamento — */
+  --container:1200px;
+  --gutter:clamp(20px,5vw,48px);
+  --section-y:clamp(80px,12vw,150px);
+  --radius:18px;
+  --radius-sm:12px;
+
+  /* — Motion — */
+  --ease:cubic-bezier(.25,.1,.25,1);
+  --dur:.3s;
+  --dur-mid:.4s;
+  --dur-slow:.7s;
+}
+
+/* =========================================================================
+   RESET / BASE
+   ========================================================================= */
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{
+  margin:0;font-family:var(--font-sans);background:var(--bg);color:var(--gray-700);
+  font-size:clamp(15px,1.05vw,17px);line-height:1.7;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+h1,h2,h3,h4{font-family:var(--font-serif);color:var(--ink);font-weight:600;margin:0;line-height:1.1;letter-spacing:-.02em;}
+p{margin:0;}
+a{color:inherit;text-decoration:none;}
+img{max-width:100%;display:block;}
+button{font-family:inherit;cursor:pointer;border:0;background:none;}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:4px;}
+
+.container{width:min(var(--container),100% - (var(--gutter)*2));margin-inline:auto;}
+.kicker{
+  font-family:var(--font-sans);font-size:.78rem;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--amber-strong);margin:0;
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;}
+
+/* Marca: chevrons duplos (>>)  */
+.chevrons{width:44px;height:22px;color:var(--amber);flex:none;}
+.chevrons.green{color:var(--green-700);}
+
+/* =========================================================================
+   BOTÕES
+   ========================================================================= */
+.btn{
+  display:inline-flex;align-items:center;gap:.6em;font-family:var(--font-sans);
+  font-weight:600;font-size:.95rem;padding:.85em 1.4em;border-radius:10px;
+  transition:transform var(--dur) var(--ease),background var(--dur) var(--ease),
+             color var(--dur) var(--ease),box-shadow var(--dur) var(--ease),border-color var(--dur) var(--ease);
+  will-change:transform;
+}
+.btn svg{width:16px;height:16px;transition:transform var(--dur) var(--ease);}
+.btn:hover svg{transform:translateX(3px);}
+.btn-primary{background:var(--amber);color:#26190A;}
+.btn-primary:hover{background:var(--amber-strong);transform:translateY(-2px);box-shadow:0 10px 24px rgba(210,147,63,.28);}
+.btn-outline{border:1px solid var(--line);color:var(--ink);background:transparent;}
+.btn-outline:hover{border-color:var(--ink);transform:translateY(-2px);}
+
+/* =========================================================================
+   HEADER (transparente sobre o hero → fundo com blur ao rolar)
+   ========================================================================= */
+.site-header{
+  position:fixed;inset:0 0 auto 0;z-index:80;
+  transition:background var(--dur-mid) var(--ease),box-shadow var(--dur-mid) var(--ease),border-color var(--dur-mid) var(--ease);
+  border-bottom:1px solid transparent;
+}
+.site-header .bar{display:flex;align-items:center;gap:2rem;height:76px;}
+.brand{display:flex;align-items:center;gap:.7rem;color:var(--on-dark);transition:color var(--dur-mid) var(--ease);}
+.brand .word{font-family:var(--font-sans);font-weight:600;font-size:1.35rem;letter-spacing:-.01em;line-height:1;}
+.brand .word b{font-weight:700;}
+.brand .word span{font-weight:400;opacity:.7;font-size:.82em;margin-left:.25em;}
+
+.nav{display:flex;align-items:center;gap:.35rem;margin-left:auto;}
+.nav a{
+  font-family:var(--font-sans);font-size:.93rem;font-weight:500;color:var(--on-dark-soft);white-space:nowrap;
+  padding:.55rem .8rem;border-radius:8px;position:relative;transition:color var(--dur) var(--ease);
+}
+.nav a::after{
+  content:"";position:absolute;left:.8rem;right:.8rem;bottom:.3rem;height:1.5px;
+  background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform var(--dur) var(--ease);
+}
+.nav a:hover,.nav a[aria-current="true"]{color:var(--on-dark);}
+.nav a:hover::after,.nav a[aria-current="true"]::after{transform:scaleX(1);}
+.header-cta{margin-left:.6rem;white-space:nowrap;}
+
+/* Estado rolado: fundo claro + blur, texto escuro */
+.site-header.scrolled{
+  background:rgba(255,255,255,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom-color:var(--line);box-shadow:0 1px 20px rgba(15,40,28,.05);
+}
+.site-header.scrolled .brand{color:var(--ink);}
+.site-header.scrolled .brand .chevrons{color:var(--green-700);}
+.site-header.scrolled .nav a{color:var(--gray-500);}
+.site-header.scrolled .nav a:hover,.site-header.scrolled .nav a[aria-current="true"]{color:var(--ink);}
+
+/* Botão do menu mobile */
+.menu-btn{display:none;width:44px;height:44px;border-radius:10px;color:var(--on-dark);margin-left:auto;align-items:center;justify-content:center;transition:color var(--dur-mid) var(--ease);}
+.site-header.scrolled .menu-btn{color:var(--ink);}
+.menu-btn svg{width:24px;height:24px;}
+
+/* Painel mobile */
+.mobile-nav{
+  position:fixed;inset:0;z-index:90;background:var(--green-900);color:var(--on-dark);
+  display:flex;flex-direction:column;padding:calc(76px + 2rem) var(--gutter) 2rem;
+  transform:translateY(-100%);opacity:0;visibility:hidden;
+  transition:transform var(--dur-mid) var(--ease),opacity var(--dur-mid) var(--ease),visibility var(--dur-mid);
+}
+.mobile-nav.open{transform:translateY(0);opacity:1;visibility:visible;}
+.mobile-nav a{font-family:var(--font-serif);font-size:2rem;color:var(--on-dark);padding:.5rem 0;border-bottom:1px solid var(--on-dark-faint);}
+.mobile-nav a.btn{font-family:var(--font-sans);font-size:.95rem;color:#26190A;border-bottom:0;margin-top:2rem;align-self:flex-start;white-space:nowrap;}
+.mobile-close{position:absolute;top:16px;right:var(--gutter);width:44px;height:44px;color:var(--on-dark);display:grid;place-items:center;}
+.mobile-close svg{width:26px;height:26px;}
+
+/* =========================================================================
+   HERO
+   ========================================================================= */
+.hero{position:relative;background:var(--green-800);color:var(--on-dark);overflow:hidden;padding-top:76px;}
+.hero-inner{position:relative;z-index:3;display:grid;grid-template-columns:1.05fr .95fr;gap:2rem;align-items:center;min-height:min(88vh,760px);padding:clamp(40px,7vw,90px) 0;}
+.hero-copy{max-width:36ch;}
+.hero h1{
+  font-size:clamp(2.9rem,7vw,5.4rem);font-weight:600;line-height:1.0;letter-spacing:-.03em;color:#fff;
+}
+.hero h1 .accent{color:var(--amber);}
+.hero-lead{margin-top:1.6rem;font-size:clamp(1.05rem,1.5vw,1.25rem);color:var(--on-dark-soft);max-width:34ch;}
+.hero .btn-primary{margin-top:2.4rem;}
+
+/* Imagem do hero com máscara "seta" + parallax */
+.hero-media{position:relative;align-self:stretch;min-height:340px;}
+.hero-media .frame{
+  position:absolute;inset:0;
+  clip-path:polygon(18% 0,100% 0,100% 100%,0 100%);
+  overflow:hidden;
+}
+.hero-media img{width:100%;height:120%;object-fit:cover;object-position:center;position:absolute;top:-10%;left:0;will-change:transform;}
+/* Seta decorativa verde sobre a foto (movimento) */
+.hero-arrow{position:absolute;z-index:2;top:50%;left:-6%;translate:0 -50%;width:60%;max-width:520px;color:var(--green-700);opacity:.92;pointer-events:none;}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--green-800) 22%,transparent 60%);z-index:2;pointer-events:none;}
+@media (min-width:901px){.hero-media .fallback{position:absolute;inset:0;background:var(--green-700);clip-path:polygon(18% 0,100% 0,100% 100%,0 100%);} }
+
+/* =========================================================================
+   QUEM SOMOS  (fundo creme)
+   ========================================================================= */
+.about{background:var(--cream);padding:var(--section-y) 0;}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,6vw,5rem);align-items:start;}
+.about h2{font-size:clamp(2rem,4.4vw,3.3rem);margin-top:1.2rem;max-width:14ch;}
+.about .underline{width:88px;height:3px;background:var(--amber);margin-top:2rem;border-radius:2px;}
+.about-text .lead{font-size:clamp(1.1rem,1.6vw,1.35rem);color:var(--ink);font-weight:500;line-height:1.5;}
+.about-text p+p{margin-top:1.4rem;color:var(--gray-500);}
+
+/* =========================================================================
+   COMO ATUAMOS  (sticky / scroll-driven)
+   ========================================================================= */
+.approach{background:#fff;padding:var(--section-y) 0;}
+.approach-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,6vw,5rem);align-items:start;}
+.approach-head{max-width:34ch;}
+.approach-head h2{font-size:clamp(2rem,4.4vw,3.3rem);margin-top:1rem;}
+.approach-head p{margin-top:1.5rem;color:var(--gray-500);}
+
+/* Coluna de pilares (2x2) */
+.pillars{margin-top:2.8rem;display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+.pillar{
+  border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.6rem;background:#fff;
+  transition:transform var(--dur-mid) var(--ease),box-shadow var(--dur-mid) var(--ease),border-color var(--dur-mid) var(--ease);
+}
+.pillar .ic{width:44px;height:44px;border-radius:10px;background:var(--cream);color:var(--green-700);display:grid;place-items:center;margin-bottom:1.2rem;transition:background var(--dur-mid) var(--ease),color var(--dur-mid) var(--ease);}
+.pillar .ic svg{width:22px;height:22px;}
+.pillar h3{font-size:1.2rem;margin-bottom:.5rem;}
+.pillar p{font-size:.95rem;color:var(--gray-500);}
+.pillar.is-active{border-color:var(--amber);box-shadow:0 14px 34px rgba(28,40,35,.08);transform:translateY(-3px);}
+.pillar.is-active .ic{background:var(--green-800);color:var(--amber);}
+
+/* Mídia sticky + parallax + legenda que muda no scroll */
+.approach-media{position:relative;}
+.approach-media .sticky{position:sticky;top:110px;}
+.approach-frame{
+  position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:4/5;
+  clip-path:polygon(0 0,100% 8%,100% 100%,12% 100%);background:var(--green-700);
+}
+.approach-frame img{width:100%;height:112%;object-fit:cover;position:absolute;top:-6%;left:0;will-change:transform;}
+.approach-caption{
+  position:absolute;left:1.2rem;bottom:1.2rem;z-index:2;display:inline-flex;align-items:center;gap:.6rem;
+  background:rgba(11,44,32,.72);backdrop-filter:blur(8px);color:#fff;border:1px solid var(--on-dark-faint);
+  padding:.6rem 1rem;border-radius:100px;font-size:.9rem;font-weight:500;
+}
+.approach-caption b{color:var(--amber);font-variant-numeric:tabular-nums;font-family:var(--font-sans);}
+.approach-progress{position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--on-dark-faint);z-index:2;}
+.approach-progress span{display:block;height:100%;width:25%;background:var(--amber);transition:width var(--dur-slow) var(--ease);}
+
+/* =========================================================================
+   MODELO DE ATUAÇÃO (fundo verde profundo, header centralizado)
+   ========================================================================= */
+.models{background:var(--green-900);color:var(--on-dark);padding:var(--section-y) 0;}
+.models-head{text-align:center;max-width:44ch;margin-inline:auto;}
+.models-head h2{color:#fff;font-size:clamp(2rem,4.6vw,3.4rem);margin-top:1rem;}
+.models-head p{margin-top:1.4rem;color:var(--on-dark-soft);}
+.models-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,3vw,2rem);margin-top:clamp(3rem,6vw,4.5rem);}
+.model-card{
+  background:var(--green-700);border:1px solid var(--on-dark-faint);border-radius:var(--radius);
+  padding:clamp(1.8rem,3vw,2.6rem);transition:transform var(--dur-mid) var(--ease),box-shadow var(--dur-mid) var(--ease);
+}
+.model-card:hover{transform:translateY(-4px);box-shadow:0 24px 50px rgba(0,0,0,.28);}
+.model-card .tag{font-family:var(--font-sans);font-size:.76rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);}
+.model-card h3{color:#fff;font-size:clamp(1.5rem,2.4vw,1.9rem);margin:.8rem 0;}
+.model-card>p{color:var(--on-dark-soft);font-size:1rem;}
+.model-card .divider{height:1px;background:var(--on-dark-faint);margin:1.8rem 0;}
+.model-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1.3rem;}
+.model-list li{display:grid;grid-template-columns:auto 1fr;gap:.9rem;}
+.model-list .check{width:22px;height:22px;color:var(--amber);flex:none;margin-top:.15rem;}
+.model-list h4{color:#fff;font-family:var(--font-sans);font-size:1rem;font-weight:600;letter-spacing:0;}
+.model-list p{color:var(--on-dark-soft);font-size:.92rem;margin-top:.2rem;}
+
+/* =========================================================================
+   DIFERENCIAIS
+   ========================================================================= */
+.diff{background:#fff;padding:var(--section-y) 0;}
+.diff-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(2rem,6vw,5rem);align-items:start;}
+.diff-intro{position:sticky;top:110px;}
+.diff-intro h2{font-size:clamp(2rem,4.4vw,3.3rem);margin:1.2rem 0 1.4rem;}
+.diff-intro p{color:var(--gray-500);}
+.diff-list{display:flex;flex-direction:column;}
+.diff-item{padding:1.8rem 0;border-top:1px solid var(--line);}
+.diff-item:first-child{border-top:0;padding-top:0;}
+.diff-item h3{font-size:1.35rem;margin-bottom:.5rem;}
+.diff-item p{color:var(--gray-500);max-width:60ch;}
+
+/* =========================================================================
+   EMPRESAS DO GRUPO  (placeholder — ver notas de entrega)
+   ========================================================================= */
+.group{background:var(--cream);padding:var(--section-y) 0;}
+.group-head{max-width:40ch;}
+.group-head h2{font-size:clamp(2rem,4.4vw,3.3rem);margin-top:1rem;}
+.group-head p{margin-top:1.4rem;color:var(--gray-500);}
+.logo-wall{margin-top:clamp(2.5rem,5vw,3.5rem);display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;}
+.logo-tile{
+  aspect-ratio:3/2;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--cream-100);
+  display:grid;place-items:center;gap:.6rem;color:var(--gray-400);
+  transition:transform var(--dur-mid) var(--ease),border-color var(--dur-mid) var(--ease),color var(--dur-mid) var(--ease);
+}
+.logo-tile:hover{transform:translateY(-3px);border-color:var(--amber);color:var(--green-700);}
+.logo-tile .chevrons{width:34px;height:17px;color:currentColor;}
+.logo-tile span{font-size:.8rem;font-weight:500;letter-spacing:.02em;}
+
+/* =========================================================================
+   CONTATO (formulário validado)
+   ========================================================================= */
+.contact{background:var(--green-800);color:var(--on-dark);padding:var(--section-y) 0;}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,6vw,5rem);align-items:start;}
+.contact-intro h2{color:#fff;font-size:clamp(2rem,4.6vw,3.4rem);margin:1rem 0 1.4rem;}
+.contact-intro p{color:var(--on-dark-soft);max-width:36ch;}
+.contact-meta{margin-top:2.4rem;display:flex;flex-direction:column;gap:1rem;}
+.contact-meta a{display:inline-flex;align-items:center;gap:.7rem;color:var(--on-dark);font-weight:500;width:max-content;}
+.contact-meta svg{width:18px;height:18px;color:var(--amber);}
+
+.form{background:rgba(255,255,255,.04);border:1px solid var(--on-dark-faint);border-radius:var(--radius);padding:clamp(1.6rem,3vw,2.4rem);}
+.field{margin-bottom:1.4rem;}
+.field label{display:block;font-size:.85rem;font-weight:600;color:var(--on-dark);margin-bottom:.5rem;}
+.field label .req{color:var(--amber);}
+.field input,.field textarea{
+  width:100%;background:rgba(255,255,255,.06);border:1px solid var(--on-dark-faint);border-radius:10px;
+  padding:.85rem 1rem;color:#fff;font-family:inherit;font-size:1rem;
+  transition:border-color var(--dur) var(--ease),background var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+}
+.field textarea{resize:vertical;min-height:130px;}
+.field input::placeholder,.field textarea::placeholder{color:rgba(236,241,237,.4);}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--amber);background:rgba(255,255,255,.1);box-shadow:0 0 0 3px rgba(223,164,92,.2);}
+.field.invalid input,.field.invalid textarea{border-color:#E9857A;}
+.field .error{display:none;color:#F0A79E;font-size:.82rem;margin-top:.45rem;}
+.field.invalid .error{display:block;}
+.form .btn-primary{width:100%;justify-content:center;margin-top:.4rem;}
+.form-status{margin-top:1.2rem;padding:.9rem 1.1rem;border-radius:10px;font-size:.92rem;font-weight:500;display:none;align-items:center;gap:.6rem;}
+.form-status.success{display:flex;background:rgba(223,164,92,.14);border:1px solid var(--amber);color:#F4D8AE;}
+.form-status svg{width:18px;height:18px;flex:none;}
+
+/* =========================================================================
+   FOOTER
+   ========================================================================= */
+.site-footer{background:var(--green-950);color:var(--on-dark-soft);padding:clamp(3rem,6vw,4.5rem) 0 2rem;}
+.footer-top{display:flex;justify-content:space-between;gap:2rem;flex-wrap:wrap;align-items:center;}
+.footer-top .brand{color:var(--on-dark);}
+.footer-nav{display:flex;flex-wrap:wrap;gap:.5rem 1.6rem;}
+.footer-nav a{color:var(--on-dark-soft);font-size:.93rem;transition:color var(--dur) var(--ease);}
+.footer-nav a:hover{color:var(--on-dark);}
+.footer-bottom{margin-top:2.5rem;padding-top:1.6rem;border-top:1px solid var(--on-dark-faint);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.85rem;color:rgba(236,241,237,.5);}
+
+/* =========================================================================
+   REVEAL ON SCROLL
+   ========================================================================= */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity var(--dur-slow) var(--ease),transform var(--dur-slow) var(--ease);}
+.reveal.in{opacity:1;transform:none;}
+
+/* =========================================================================
+   RESPONSIVO
+   ========================================================================= */
+@media (max-width:900px){
+  .nav,.header-cta{display:none;}
+  .menu-btn{display:flex;}
+  .hero-inner{grid-template-columns:1fr;min-height:auto;gap:0;padding-bottom:0;}
+  .hero-copy{max-width:none;}
+  .hero-media{margin-top:2.5rem;min-height:auto;aspect-ratio:16/12;width:100vw;margin-left:calc(50% - 50vw);}
+  .hero-media .frame{clip-path:polygon(0 12%,100% 0,100% 100%,0 100%);}
+  .hero-arrow{display:none;}
+  .hero::after{background:linear-gradient(180deg,var(--green-800) 20%,transparent 70%);}
+  .about-grid,.approach-grid,.models-grid,.diff-grid,.contact-grid{grid-template-columns:1fr;}
+  .approach-media .sticky,.diff-intro{position:static;}
+  .approach-media{margin-top:2.5rem;max-width:460px;}
+  .logo-wall{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:560px){
+  .pillars{grid-template-columns:1fr;}
+  .hero h1{font-size:clamp(2.6rem,12vw,3.4rem);}
+  .footer-bottom{flex-direction:column;}
+}
+@media (max-width:420px){
+  .logo-wall{grid-template-columns:1fr;}
+}
+
+/* Respeito a prefers-reduced-motion */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;}
+  .reveal{opacity:1;transform:none;}
+  .hero-media img,.approach-frame img{transform:none!important;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================ HEADER ============================ -->
+<header class="site-header" id="header">
+  <div class="container bar">
+    <a class="brand" href="#inicio" aria-label="Árpoa Capital — início">
+      <span class="word"><b>árpoa</b><span>capital</span></span>
+      <svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true">
+        <path d="M2 2 L14 12 L2 22 L9 22 L21 12 L9 2 Z"/>
+        <path d="M20 2 L32 12 L20 22 L27 22 L39 12 L27 2 Z"/>
+      </svg>
+    </a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a href="#inicio" aria-current="true">Início</a>
+      <a href="#quem-somos">Quem somos</a>
+      <a href="#como-atuamos">Como atuamos</a>
+      <a href="#diferenciais">Diferenciais</a>
+      <a href="#empresas-grupo">Empresas do grupo</a>
+      <a href="#contato">Contato</a>
+    </nav>
+    <a href="#contato" class="btn btn-primary header-cta">Converse com a Árpoa
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileNav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- Menu mobile -->
+<div class="mobile-nav" id="mobileNav" aria-hidden="true">
+  <button class="mobile-close" id="menuClose" aria-label="Fechar menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <a href="#quem-somos">Quem somos</a>
+  <a href="#como-atuamos">Como atuamos</a>
+  <a href="#diferenciais">Diferenciais</a>
+  <a href="#empresas-grupo">Empresas do grupo</a>
+  <a href="#contato">Contato</a>
+  <a href="#contato" class="btn btn-primary">Converse com a Árpoa
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </a>
+</div>
+
+<main>
+  <!-- ============================ HERO ============================ -->
+  <section class="hero" id="inicio">
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <h1 class="reveal"><span class="accent">Árpoa</span>: presença<br>que move</h1>
+        <p class="hero-lead reveal">Capital, direção, conexões e execução para transformar investimento em crescimento.</p>
+        <a href="#contato" class="btn btn-primary reveal">Converse com a Árpoa
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+      <div class="hero-media" aria-hidden="false">
+        <div class="fallback"></div>
+        <div class="frame">
+          <!-- PLACEHOLDER: substituir por foto real da marca -->
+          <img class="parallax" data-speed="24" loading="eager"
+               src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=1100&q=80"
+               alt="Executivo sorridente representando a presença da Árpoa junto às empresas">
+        </div>
+        <svg class="hero-arrow" viewBox="0 0 200 200" fill="currentColor" aria-hidden="true">
+          <path d="M10 40 L120 100 L10 160 L55 160 L165 100 L55 40 Z"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ QUEM SOMOS ============================ -->
+  <section class="about" id="quem-somos">
+    <div class="container about-grid">
+      <div class="about-headline">
+        <svg class="chevrons green reveal" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true">
+          <path d="M2 2 L14 12 L2 22 L9 22 L21 12 L9 2 Z"/><path d="M20 2 L32 12 L20 22 L27 22 L39 12 L27 2 Z"/>
+        </svg>
+        <p class="kicker reveal" style="margin-top:1rem">Quem somos</p>
+        <h2 class="reveal">Somos investidores estratégicos que ficam</h2>
+        <div class="underline reveal"></div>
+      </div>
+      <div class="about-text">
+        <p class="lead reveal">Entramos com capital, permanecemos com presença e construímos junto às empresas em que acreditamos.</p>
+        <p class="reveal">A Árpoa combina visão de longo prazo, acompanhamento próximo, inteligência de dados, conexões qualificadas e capacidade de execução para ajudar negócios a crescerem com mais clareza, direção e consistência.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ COMO ATUAMOS (sticky/scroll-driven) ============================ -->
+  <section class="approach" id="como-atuamos">
+    <div class="container approach-grid">
+      <div class="approach-content">
+        <div class="approach-head">
+          <p class="kicker reveal">Como atuamos</p>
+          <h2 class="reveal">Presença que transforma investimento em direção</h2>
+          <p class="reveal">Investimos em empresas com potencial de crescimento e atuamos de perto para acelerar a evolução do seu negócio. Essa presença contínua transforma investimento em direção e direção em movimento real.</p>
+        </div>
+        <div class="pillars" id="pillars">
+          <article class="pillar reveal" data-index="0" data-name="Capital estratégico">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9v9z"/><path d="M12 3a9 9 0 0 1 9 9h-9z"/></svg></div>
+            <h3>Capital estratégico</h3>
+            <p>Aporte com visão de longo prazo.</p>
+          </article>
+          <article class="pillar reveal" data-index="1" data-name="Direção">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg></div>
+            <h3>Direção</h3>
+            <p>Leitura do negócio e acompanhamento estratégico nas decisões.</p>
+          </article>
+          <article class="pillar reveal" data-index="2" data-name="Conexão">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div>
+            <h3>Conexão</h3>
+            <p>Acesso a uma rede qualificada capaz de abrir portas.</p>
+          </article>
+          <article class="pillar reveal" data-index="3" data-name="Execução">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2 6 4-14 2 8h6"/></svg></div>
+            <h3>Execução</h3>
+            <p>Apoio prático em governança, growth, finanças e dados.</p>
+          </article>
+        </div>
+      </div>
+      <div class="approach-media">
+        <div class="sticky">
+          <div class="approach-frame">
+            <!-- PLACEHOLDER: substituir por foto real da marca -->
+            <img class="parallax" data-speed="18" loading="lazy"
+                 src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1000&q=80"
+                 alt="Dupla de profissionais analisando indicadores do negócio em um laptop">
+            <div class="approach-caption"><b id="capNum">01</b> <span id="capName">Capital estratégico</span></div>
+            <div class="approach-progress"><span id="approachBar"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ MODELO DE ATUAÇÃO ============================ -->
+  <section class="models" id="modelo">
+    <div class="container">
+      <div class="models-head">
+        <p class="kicker reveal">Modelo de atuação</p>
+        <h2 class="reveal">Parcerias sob medida para cada negócio</h2>
+        <p class="reveal">Atuamos em dois formatos de parceria, ajustados à maturidade e às necessidades de cada empreendimento.</p>
+      </div>
+      <div class="models-grid">
+        <!-- MODELO 01 -->
+        <article class="model-card reveal">
+          <span class="tag">Modelo 01</span>
+          <h3>Empresas investidas</h3>
+          <p>Negócios em que a Árpoa entra como sócia.</p>
+          <div class="divider"></div>
+          <ul class="model-list">
+            <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-5"/></svg><div><h4>Equity</h4><p>Participação societária com alinhamento de interesses e visão de negócio de longo prazo.</p></div></li>
+            <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-5"/></svg><div><h4>Smart Money</h4><p>Capital aportado com inteligência, não só com recursos financeiros.</p></div></li>
+            <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-5"/></svg><div><h4>Direcionamento estratégico</h4><p>Apoio nas decisões que definem o futuro do negócio.</p></div></li>
+            <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-5"/></svg><div><h4>Networking</h4><p>Acesso a conexões qualificadas, abrindo portas para novas oportunidades.</p></div></li>
+          </ul>
+        </article>
+        <!-- MODELO 02 -->
+        <article class="model-card reveal">
+          <span class="tag">Modelo 02</span>
+          <h3>Empresas do ecossistema Árpoa</h3>
+          <p>Negócios que fazem parte do grupo e recebem suporte direto para crescer.</p>
+          <div class="divider"></div>
+          <ul class="model-list">
+            <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-5"/></svg><div><h4>Operação</h4><p>Apoio prático na estruturação e no dia a dia do negócio.</p></div></li>
+            <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-5"/></svg><div><h4>Growth</h4><p>Estratégias para a aceleração do crescimento do empreendimento.</p></div></li>
+            <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-5"/></svg><div><h4>Governança</h4><p>Processos e estrutura para uma gestão mais transparente e sustentável.</p></div></li>
+            <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-5"/></svg><div><h4>Escala</h4><p>Suporte para expandir operações com visão de longo prazo.</p></div></li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ DIFERENCIAIS ============================ -->
+  <section class="diff" id="diferenciais">
+    <div class="container diff-grid">
+      <div class="diff-intro">
+        <svg class="chevrons reveal" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true">
+          <path d="M2 2 L14 12 L2 22 L9 22 L21 12 L9 2 Z"/><path d="M20 2 L32 12 L20 22 L27 22 L39 12 L27 2 Z"/>
+        </svg>
+        <p class="kicker reveal" style="margin-top:1rem">Diferenciais</p>
+        <h2 class="reveal">Diferenciais da Árpoa</h2>
+        <p class="reveal">Nos diferenciamos por unir o que poucos investidores entregam juntos: capital, presença que fica e capacidade real de execução.</p>
+      </div>
+      <div class="diff-list">
+        <div class="diff-item reveal"><h3>Capital + Estratégia</h3><p>Aporte financeiro aliado a visão de negócio e direcionamento nas decisões que realmente importam.</p></div>
+        <div class="diff-item reveal"><h3>Atuação prática</h3><p>Presença ativa no dia a dia, não apenas em reuniões formais ou relatórios periódicos.</p></div>
+        <div class="diff-item reveal"><h3>Governança</h3><p>Estrutura e processos que trazem transparência e solidez à gestão do negócio.</p></div>
+        <div class="diff-item reveal"><h3>Inteligência de dados</h3><p>Leitura de indicadores para embasar decisões mais rápidas e assertivas.</p></div>
+        <div class="diff-item reveal"><h3>Networking qualificado</h3><p>Acesso a uma rede de conexões capaz de abrir portas e gerar oportunidades reais.</p></div>
+        <div class="diff-item reveal"><h3>Crescimento sustentável</h3><p>Expansão com consistência, direção e visão de longo prazo — não crescimento a qualquer custo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ EMPRESAS DO GRUPO (placeholder) ============================ -->
+  <section class="group" id="empresas-grupo">
+    <div class="container">
+      <div class="group-head">
+        <p class="kicker reveal">Empresas do grupo</p>
+        <h2 class="reveal">O ecossistema Árpoa</h2>
+        <p class="reveal">Negócios que fazem parte do grupo e recebem suporte direto para crescer.</p>
+      </div>
+      <!-- PLACEHOLDER: substituir pelos logos/nomes reais das empresas do grupo -->
+      <div class="logo-wall">
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M2 2 L14 12 L2 22 L9 22 L21 12 L9 2 Z"/><path d="M20 2 L32 12 L20 22 L27 22 L39 12 L27 2 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M2 2 L14 12 L2 22 L9 22 L21 12 L9 2 Z"/><path d="M20 2 L32 12 L20 22 L27 22 L39 12 L27 2 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M2 2 L14 12 L2 22 L9 22 L21 12 L9 2 Z"/><path d="M20 2 L32 12 L20 22 L27 22 L39 12 L27 2 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M2 2 L14 12 L2 22 L9 22 L21 12 L9 2 Z"/><path d="M20 2 L32 12 L20 22 L27 22 L39 12 L27 2 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M2 2 L14 12 L2 22 L9 22 L21 12 L9 2 Z"/><path d="M20 2 L32 12 L20 22 L27 22 L39 12 L27 2 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M2 2 L14 12 L2 22 L9 22 L21 12 L9 2 Z"/><path d="M20 2 L32 12 L20 22 L27 22 L39 12 L27 2 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M2 2 L14 12 L2 22 L9 22 L21 12 L9 2 Z"/><path d="M20 2 L32 12 L20 22 L27 22 L39 12 L27 2 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M2 2 L14 12 L2 22 L9 22 L21 12 L9 2 Z"/><path d="M20 2 L32 12 L20 22 L27 22 L39 12 L27 2 Z"/></svg><span>Empresa do grupo</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ CONTATO ============================ -->
+  <section class="contact" id="contato">
+    <div class="container contact-grid">
+      <div class="contact-intro">
+        <p class="kicker reveal">Contato</p>
+        <h2 class="reveal">Converse com a Árpoa</h2>
+        <p class="reveal">Conte sobre o seu negócio. Se houver aderência, damos início a uma conversa próxima — com capital, direção e presença de verdade.</p>
+        <div class="contact-meta reveal">
+          <a href="mailto:contato@arpoacapital.com.br"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg> contato@arpoacapital.com.br</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.82-2.05 3.75-2.05 4 0 4.75 2.63 4.75 6.05V21H21v-5.4c0-1.3 0-2.95-1.8-2.95s-2.1 1.4-2.1 2.85V21H13z"/></svg> LinkedIn da Árpoa</a>
+        </div>
+      </div>
+
+      <!-- Formulário validado -->
+      <form class="form reveal" id="contactForm" novalidate>
+        <div class="field" id="f-nome">
+          <label for="nome">Nome <span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="nome" name="nome" placeholder="Seu nome completo" autocomplete="name" required aria-required="true" aria-describedby="e-nome">
+          <span class="error" id="e-nome">Informe seu nome (mínimo 2 caracteres).</span>
+        </div>
+        <div class="field" id="f-email">
+          <label for="email">E-mail <span class="req" aria-hidden="true">*</span></label>
+          <input type="email" id="email" name="email" placeholder="voce@empresa.com" autocomplete="email" required aria-required="true" aria-describedby="e-email">
+          <span class="error" id="e-email">Informe um e-mail válido.</span>
+        </div>
+        <div class="field" id="f-msg">
+          <label for="mensagem">Mensagem <span class="req" aria-hidden="true">*</span></label>
+          <textarea id="mensagem" name="mensagem" placeholder="Conte um pouco sobre o seu negócio e o momento atual." required aria-required="true" aria-describedby="e-msg"></textarea>
+          <span class="error" id="e-msg">Escreva uma mensagem com pelo menos 10 caracteres.</span>
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar mensagem
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <a class="brand" href="#inicio" aria-label="Árpoa Capital">
+        <span class="word"><b>árpoa</b><span>capital</span></span>
+        <svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M2 2 L14 12 L2 22 L9 22 L21 12 L9 2 Z"/><path d="M20 2 L32 12 L20 22 L27 22 L39 12 L27 2 Z"/></svg>
+      </a>
+      <nav class="footer-nav" aria-label="Rodapé">
+        <a href="#quem-somos">Quem somos</a>
+        <a href="#como-atuamos">Como atuamos</a>
+        <a href="#diferenciais">Diferenciais</a>
+        <a href="#empresas-grupo">Empresas do grupo</a>
+        <a href="#contato">Contato</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Árpoa Capital. Presença que move.</span>
+      <span>Capital · Direção · Conexões · Execução</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* =========================================================================
+   1. HEADER — fundo com blur ao rolar
+   ========================================================================= */
+const header = document.getElementById('header');
+const onScrollHeader = () => header.classList.toggle('scrolled', window.scrollY > 24);
+onScrollHeader();
+
+/* =========================================================================
+   2. MENU MOBILE
+   ========================================================================= */
+const menuBtn = document.getElementById('menuBtn');
+const menuClose = document.getElementById('menuClose');
+const mobileNav = document.getElementById('mobileNav');
+const setMenu = (open) => {
+  mobileNav.classList.toggle('open', open);
+  mobileNav.setAttribute('aria-hidden', String(!open));
+  menuBtn.setAttribute('aria-expanded', String(open));
+  document.body.style.overflow = open ? 'hidden' : '';
+  if (open) menuClose.focus();
+};
+menuBtn.addEventListener('click', () => setMenu(true));
+menuClose.addEventListener('click', () => setMenu(false));
+mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && mobileNav.classList.contains('open')) setMenu(false); });
+
+/* =========================================================================
+   3. REVEAL ON SCROLL — fade + translateY, com stagger entre irmãos
+   ========================================================================= */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    // stagger: usa a posição entre elementos .reveal irmãos
+    const siblings = Array.from(el.parentElement.children).filter(c => c.classList.contains('reveal'));
+    const idx = siblings.indexOf(el);
+    el.style.transitionDelay = (idx > 0 ? Math.min(idx, 6) * 80 : 0) + 'ms';
+    el.classList.add('in');
+    revealObserver.unobserve(el);
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* =========================================================================
+   4. SEÇÃO SCROLL-DRIVEN (Como atuamos)
+   Pilar ativo muda conforme o scroll; legenda e barra de progresso acompanham.
+   ========================================================================= */
+const pillars = Array.from(document.querySelectorAll('#pillars .pillar'));
+const capNum = document.getElementById('capNum');
+const capName = document.getElementById('capName');
+const approachBar = document.getElementById('approachBar');
+let activePillar = -1;
+const setActivePillar = (i) => {
+  if (i === activePillar || i < 0) return;
+  activePillar = i;
+  pillars.forEach((p, k) => p.classList.toggle('is-active', k === i));
+  capNum.textContent = String(i + 1).padStart(2, '0');
+  capName.textContent = pillars[i].dataset.name;
+  approachBar.style.width = ((i + 1) / pillars.length * 100) + '%';
+};
+const pillarObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) setActivePillar(+entry.target.dataset.index);
+  });
+}, { threshold: 0.6, rootMargin: '-30% 0px -30% 0px' });
+pillars.forEach(p => pillarObserver.observe(p));
+setActivePillar(0);
+
+/* =========================================================================
+   5. PARALLAX LEVE — apenas transform, com rAF; respeita reduced-motion
+   ========================================================================= */
+const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const parallaxEls = Array.from(document.querySelectorAll('.parallax'));
+let ticking = false;
+const runParallax = () => {
+  const vh = window.innerHeight;
+  parallaxEls.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.bottom < 0 || rect.top > vh) return;         // fora da tela: ignora
+    const progress = (rect.top + rect.height / 2 - vh / 2) / vh; // -0.5..0.5
+    const speed = parseFloat(el.dataset.speed || '18');
+    el.style.transform = `translate3d(0, ${(-progress * speed).toFixed(2)}px, 0)`;
+  });
+  ticking = false;
+};
+const onScroll = () => {
+  onScrollHeader();
+  if (!prefersReduced && !ticking) { requestAnimationFrame(runParallax); ticking = true; }
+};
+window.addEventListener('scroll', onScroll, { passive: true });
+window.addEventListener('resize', runParallax, { passive: true });
+if (!prefersReduced) runParallax();
+
+/* =========================================================================
+   6. NAV — destaque do link da seção ativa (scrollspy)
+   ========================================================================= */
+const navLinks = Array.from(document.querySelectorAll('.nav a'));
+const sections = navLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const spy = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    navLinks.forEach(a => a.setAttribute('aria-current', a.getAttribute('href') === '#' + entry.target.id ? 'true' : 'false'));
+  });
+}, { rootMargin: '-45% 0px -50% 0px' });
+sections.forEach(s => spy.observe(s));
+
+/* =========================================================================
+   7. FORMULÁRIO — validação + estados de erro/sucesso
+   ========================================================================= */
+const form = document.getElementById('contactForm');
+const status = document.getElementById('formStatus');
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+const validators = {
+  nome: v => v.trim().length >= 2,
+  email: v => emailRe.test(v.trim()),
+  mensagem: v => v.trim().length >= 10,
+};
+const fieldWrap = { nome: 'f-nome', email: 'f-email', mensagem: 'f-msg' };
+
+const validateField = (name) => {
+  const input = form.elements[name];
+  const ok = validators[name](input.value);
+  const wrap = document.getElementById(fieldWrap[name]);
+  wrap.classList.toggle('invalid', !ok);
+  input.setAttribute('aria-invalid', String(!ok));
+  return ok;
+};
+
+// valida ao sair do campo (blur) — não a cada tecla
+['nome', 'email', 'mensagem'].forEach(name => {
+  form.elements[name].addEventListener('blur', () => validateField(name));
+  form.elements[name].addEventListener('input', () => {
+    const wrap = document.getElementById(fieldWrap[name]);
+    if (wrap.classList.contains('invalid')) validateField(name); // corrige em tempo real após erro
+  });
+});
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  status.className = 'form-status';
+  const results = ['nome', 'email', 'mensagem'].map(validateField);
+  if (!results.every(Boolean)) {
+    // foca o primeiro campo inválido
+    const firstInvalid = ['nome', 'email', 'mensagem'].find(n => !validators[n](form.elements[n].value));
+    if (firstInvalid) form.elements[firstInvalid].focus();
+    return;
+  }
+  // Sucesso (simulado — sem backend). Integrar a um endpoint real quando disponível.
+  status.className = 'form-status success';
+  status.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Mensagem enviada! A Árpoa entrará em contato em breve.';
+  form.reset();
+  ['f-nome', 'f-email', 'f-msg'].forEach(id => document.getElementById(id).classList.remove('invalid'));
+});
+
+/* =========================================================================
+   8. Imagem quebrada → mantém o fundo verde (placeholder resiliente)
+   ========================================================================= */
+document.querySelectorAll('img.parallax').forEach(img => {
+  img.addEventListener('error', () => { img.style.display = 'none'; });
+});
+</script>
+</body>
+</html>
