@@ -108,10 +108,10 @@
           var base64 = reader.result.split(',')[1];
 
           google.script.run
-            .withSuccessHandler(function(preview) {
-              // Fecha este diálogo e abre o diálogo final com o preview do PDF
-              google.script.run.abrirDialogoFinal(preview.base64);
-              google.script.host.close();
+            .withSuccessHandler(function() {
+              // O servidor (processarComArquivo) já abriu o diálogo final,
+              // que substitui este. Nada a fazer aqui.
+              status.textContent = '✅ Pronto! Abrindo as opções finais...';
             })
             .withFailureHandler(function(erro) {
               status.style.color = '#d93025';
