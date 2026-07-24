@@ -15,11 +15,18 @@
         padding: 40px 20px;
         color: #1a73e8;
         cursor: pointer;
-        transition: background 0.15s ease;
+        transition: background 0.15s ease, border-color 0.15s ease;
       }
 
       #zona.hover {
         background: #e8f0fe;
+      }
+
+      /* Estado: arquivo carregado, aguardando o clique no botão */
+      #zona.carregado {
+        border-color: #188038;
+        color: #188038;
+        background: #e6f4ea;
       }
 
       #nomeArquivo {
@@ -27,6 +34,23 @@
         font-size: 13px;
         color: #333;
         word-break: break-all;
+        min-height: 18px;
+      }
+
+      #btnProcessar {
+        margin-top: 18px;
+        padding: 11px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        color: white;
+        background: #188038;
+        cursor: pointer;
+      }
+
+      #btnProcessar:disabled {
+        background: #b7c2ba;
+        cursor: not-allowed;
       }
 
       #status {
@@ -46,6 +70,10 @@
       </div>
       <input type="file" id="input" accept=".xlsx,.xls" style="display:none">
       <div id="nomeArquivo"></div>
+
+      <button id="btnProcessar" disabled onclick="processar()">
+        Processar arquivo
+      </button>
     </div>
 
     <div id="status"></div>
@@ -55,6 +83,10 @@
       var input = document.getElementById('input');
       var status = document.getElementById('status');
       var nomeArquivo = document.getElementById('nomeArquivo');
+      var btnProcessar = document.getElementById('btnProcessar');
+
+      // Guarda o arquivo escolhido até o usuário clicar em "Processar arquivo"
+      var arquivoSelecionado = null;
 
       zona.addEventListener('click', function() {
         input.click();
@@ -73,68 +105,87 @@
         e.preventDefault();
         zona.classList.remove('hover');
         if (e.dataTransfer.files.length > 0) {
-          enviar(e.dataTransfer.files[0]);
+          carregar(e.dataTransfer.files[0]);
         }
       });
 
       input.addEventListener('change', function() {
         if (input.files.length > 0) {
-          enviar(input.files[0]);
+          carregar(input.files[0]);
         }
       });
 
-      function enviar(file) {
+      // PASSO 1 — só carrega o arquivo em memória e habilita o botão
+      function carregar(file) {
         if (!file) return;
 
         var nomeLower = file.name.toLowerCase();
         if (!nomeLower.endsWith('.xlsx') && !nomeLower.endsWith('.xls')) {
+          arquivoSelecionado = null;
+          btnProcessar.disabled = true;
+          zona.classList.remove('carregado');
           status.style.color = '#d93025';
           status.textContent = 'Selecione um arquivo Excel (.xlsx ou .xls).';
           return;
         }
 
-        nomeArquivo.textContent = file.name;
-        status.style.color = '#333';
-        status.textContent = '⏳ Enviando e processando... isso pode levar alguns segundos.';
-
-        // Desabilita novos envios enquanto processa
-        zona.style.pointerEvents = 'none';
-        zona.style.opacity = '0.6';
-
         var reader = new FileReader();
 
         reader.onload = function() {
           // reader.result = "data:<mime>;base64,<conteudo>"
-          var base64 = reader.result.split(',')[1];
+          arquivoSelecionado = {
+            nome: file.name,
+            mimeType: file.type ||
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            bytes: reader.result.split(',')[1]
+          };
 
-          google.script.run
-            .withSuccessHandler(function() {
-              // O servidor (processarComArquivo) já abriu o diálogo final,
-              // que substitui este. Nada a fazer aqui.
-              status.textContent = '✅ Pronto! Abrindo as opções finais...';
-            })
-            .withFailureHandler(function(erro) {
-              status.style.color = '#d93025';
-              status.textContent = 'Erro: ' + (erro.message || erro);
-              zona.style.pointerEvents = 'auto';
-              zona.style.opacity = '1';
-            })
-            .processarComArquivo({
-              nome: file.name,
-              mimeType: file.type ||
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-              bytes: base64
-            });
+          zona.classList.add('carregado');
+          zona.innerHTML = '✅ Arquivo carregado<br><small>clique em "Processar arquivo"</small>';
+          nomeArquivo.textContent = file.name;
+          btnProcessar.disabled = false;
+          status.style.color = '#333';
+          status.textContent = '';
         };
 
         reader.onerror = function() {
+          arquivoSelecionado = null;
+          btnProcessar.disabled = true;
           status.style.color = '#d93025';
           status.textContent = 'Não foi possível ler o arquivo.';
-          zona.style.pointerEvents = 'auto';
-          zona.style.opacity = '1';
         };
 
         reader.readAsDataURL(file);
+      }
+
+      // PASSO 2 — só aqui o código do servidor roda o resto
+      function processar() {
+        if (!arquivoSelecionado) {
+          status.style.color = '#d93025';
+          status.textContent = 'Nenhum arquivo carregado.';
+          return;
+        }
+
+        btnProcessar.disabled = true;
+        zona.style.pointerEvents = 'none';
+        zona.style.opacity = '0.6';
+        status.style.color = '#333';
+        status.textContent = '⏳ Processando... isso pode levar alguns segundos.';
+
+        google.script.run
+          .withSuccessHandler(function() {
+            // O servidor (processarComArquivo) já abriu o diálogo final,
+            // que substitui este. Nada a fazer aqui.
+            status.textContent = '✅ Pronto! Abrindo as opções finais...';
+          })
+          .withFailureHandler(function(erro) {
+            status.style.color = '#d93025';
+            status.textContent = 'Erro: ' + (erro.message || erro);
+            btnProcessar.disabled = false;
+            zona.style.pointerEvents = 'auto';
+            zona.style.opacity = '1';
+          })
+          .processarComArquivo(arquivoSelecionado);
       }
     </script>
   </body>

@@ -38,7 +38,7 @@ funções ficam duplicadas e o projeto quebra).
 ```
 Menu "Gerar PDF - Contas a pagar"
   └─ fun1()  (confirma e abre o diálogo de upload)
-       └─ DialogoUpload.html  (arrastar/soltar o Excel)
+       └─ DialogoUpload.html  (1. arrastar/soltar o Excel → 2. clicar "Processar arquivo")
             └─ processarComArquivo(arquivo)
                  ├─ criarBackupBaseExcel()
                  ├─ prepararRomaneio()
