@@ -38,15 +38,23 @@ funções ficam duplicadas e o projeto quebra).
 ```
 Menu "Gerar PDF - Contas a pagar"
   └─ fun1()  (confirma e abre o diálogo de upload)
-       └─ DialogoUpload.html  (1. arrastar/soltar o Excel → 2. clicar "Processar arquivo")
-            └─ processarComArquivo(arquivo)
-                 ├─ criarBackupBaseExcel()
-                 ├─ prepararRomaneio()
-                 ├─ importarExcelDoUpload(arquivo)
-                 └─ getPdfPreviewData()
-            └─ abrirDialogoFinal(preview.base64)
-                 └─ DialogoFinal.html  (Visualizar / Concluir / Cancelar)
+       └─ DialogoUpload.html
+            ├─ TELA 1: arrastar/soltar o Excel → clicar "Processar arquivo"
+            │     └─ processarComArquivo(arquivo)
+            │          ├─ criarBackupBaseExcel()
+            │          ├─ prepararRomaneio()
+            │          ├─ importarExcelDoUpload(arquivo)
+            │          └─ return getPdfPreviewData()
+            └─ TELA 2 (mesma janela): Visualizar / Concluir / Cancelar
+                  ├─ concluirOperacao()
+                  └─ cancelarOperacao()
 ```
+
+> O fluxo usa **um único diálogo** (`DialogoUpload`), que troca de tela após
+> processar. O `DialogoFinal.html` **não é mais usado** — o Apps Script não abre
+> um modal por cima de outro de forma confiável quando a chamada parte de dentro
+> de um diálogo. Pode manter o arquivo `DialogoFinal` no projeto (não atrapalha)
+> ou removê-lo.
 
 ## Como instalar no projeto Apps Script
 

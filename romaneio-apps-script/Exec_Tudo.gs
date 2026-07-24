@@ -34,19 +34,20 @@ function fun1() {
 }
 
 /**
- * Chamada pelo DialogoUpload.html depois que o usuário solta/seleciona o arquivo.
- * Faz backup, prepara o romaneio, importa o Excel enviado e JÁ ABRE o diálogo final
- * (no servidor), que substitui o diálogo de upload. Isso evita depender de uma
- * segunda chamada google.script.run + host.close() no cliente, que poderia ser
- * cancelada antes de abrir o diálogo final ("nada acontece" depois do drop).
+ * Chamada pelo DialogoUpload.html depois que o usuário clica em "Processar arquivo".
+ * Faz backup, prepara o romaneio, importa o Excel enviado e DEVOLVE o preview do PDF.
+ *
+ * IMPORTANTE: não abre um segundo diálogo. O Apps Script não abre um modal por cima
+ * de outro modal de forma confiável quando a chamada parte de dentro de um diálogo.
+ * Por isso a própria janela do DialogoUpload troca de tela e mostra as opções finais
+ * (Visualizar / Concluir / Cancelar) usando este preview.
  */
 function processarComArquivo(arquivo) {
   criarBackupBaseExcel();
   prepararRomaneio();
   importarExcelDoUpload(arquivo);
 
-  var preview = getPdfPreviewData();
-  abrirDialogoFinal(preview.base64);
+  return getPdfPreviewData();
 }
 
 function abrirDialogoFinal(pdfBase64) {
