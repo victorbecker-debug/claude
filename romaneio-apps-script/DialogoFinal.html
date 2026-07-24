@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .botoes {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      button {
+        padding: 10px 14px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        color: white;
+      }
+
+      .visualizar { background: #1a73e8; }
+      .cancelar { background: #d93025; }
+      .concluir { background: #188038; }
+
+      #loading {
+        display: none;
+        margin-top: 20px;
+        font-weight: bold;
+        color: #333;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="conteudo">
+      <div>
+        O processo foi executado. Escolha uma opção:
+      </div>
+
+      <div class="botoes">
+        <button class="visualizar" onclick="visualizar()">Visualizar PDF</button>
+        <button class="cancelar" onclick="cancelar()">Cancelar operação</button>
+        <button class="concluir" onclick="concluir()">Concluir operação</button>
+      </div>
+    </div>
+
+    <div id="loading">
+      ⏳ Aguarde, estamos concluindo a operação...
+    </div>
+
+    <script>
+      var pdfBase64 = "<?= pdfBase64 ?>";
+
+      function base64ToBlob(base64, contentType) {
+        var byteCharacters = atob(base64);
+        var byteNumbers = new Array(byteCharacters.length);
+
+        for (var i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type: contentType });
+      }
+
+      function visualizar() {
+        try {
+          var blob = base64ToBlob(pdfBase64, 'application/pdf');
+          var url = URL.createObjectURL(blob);
+          window.open(url, '_blank');
+        } catch (e) {
+          alert("Não foi possível abrir o PDF.");
+        }
+      }
+
+      function mostrarLoading() {
+        document.getElementById("conteudo").style.display = "none";
+        document.getElementById("loading").style.display = "block";
+      }
+
+      function cancelar() {
+        mostrarLoading();
+
+        google.script.run
+          .withSuccessHandler(function(msg) {
+            google.script.host.close();
+            setTimeout(function() {
+              alert(msg);
+            }, 200);
+          })
+          .withFailureHandler(function(erro) {
+            alert(erro.message || erro);
+          })
+          .cancelarOperacao();
+      }
+
+      function concluir() {
+        mostrarLoading();
+
+        google.script.run
+          .withSuccessHandler(function(msg) {
+            google.script.host.close();
+            setTimeout(function() {
+              alert(msg);
+            }, 200);
+          })
+          .withFailureHandler(function(erro) {
+            alert(erro.message || erro);
+          })
+          .concluirOperacao();
+      }
+    </script>
+  </body>
+</html>
