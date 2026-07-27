@@ -20,6 +20,8 @@
   --green-800:#103B2C;   /* fundo do hero */
   --green-700:#164A38;   /* cards sobre verde */
   --green-600:#1E5A44;
+  --teal:#0B4A45;        /* teal/petróleo do logo (sobre claro) */
+  --teal-2:#4FA79D;      /* teal claro (sobre escuro) */
   --cream:#F7EEDE;       /* fundo quem somos */
   --cream-100:#FBF6EC;
 
@@ -114,7 +116,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;}
 }
 .site-header .bar{display:flex;align-items:center;gap:2rem;height:76px;}
 .brand{display:flex;align-items:center;gap:.7rem;color:var(--ink);}
-.brand .chevrons{color:var(--green-700);}
+.brand .chevrons{color:var(--teal);}
 .brand .word{font-family:var(--font-sans);font-weight:600;font-size:1.35rem;letter-spacing:-.01em;line-height:1;}
 .brand .word b{font-weight:700;}
 .brand .word span{font-weight:400;color:var(--gray-400);font-size:.82em;margin-left:.25em;}
@@ -319,6 +321,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;}
 .site-footer{background:var(--green-950);color:var(--on-dark-soft);padding:clamp(3rem,6vw,4.5rem) 0 2rem;}
 .footer-top{display:flex;justify-content:space-between;gap:2rem;flex-wrap:wrap;align-items:center;}
 .footer-top .brand{color:var(--on-dark);}
+.footer-top .brand .chevrons{color:var(--teal-2);}
 .footer-nav{display:flex;flex-wrap:wrap;gap:.5rem 1.6rem;}
 .footer-nav a{color:var(--on-dark-soft);font-size:.93rem;transition:color var(--dur) var(--ease);}
 .footer-nav a:hover{color:var(--on-dark);}
@@ -373,8 +376,8 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;}
     <a class="brand" href="#inicio" aria-label="Árpoa Capital — início">
       <span class="word"><b>árpoa</b><span>capital</span></span>
       <svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true">
-        <path d="M4 3 L23 12 L4 21 L11 12 Z"/>
-        <path d="M25 3 L44 12 L25 21 L32 12 Z"/>
+        <path d="M3 5 L23 12 L3 19 L10 12 Z"/>
+        <path d="M25 5 L45 12 L25 19 L32 12 Z"/>
       </svg>
     </a>
     <nav class="nav" aria-label="Navegação principal">
@@ -440,7 +443,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;}
     <div class="container about-grid">
       <div class="about-headline">
         <svg class="chevrons green reveal" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true">
-          <path d="M4 3 L23 12 L4 21 L11 12 Z"/><path d="M25 3 L44 12 L25 21 L32 12 Z"/>
+          <path d="M3 5 L23 12 L3 19 L10 12 Z"/><path d="M25 5 L45 12 L25 19 L32 12 Z"/>
         </svg>
         <p class="kicker reveal" style="margin-top:1rem">Quem somos</p>
         <h2 class="reveal">Somos investidores estratégicos que ficam</h2>
@@ -544,7 +547,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;}
     <div class="container diff-grid">
       <div class="diff-intro">
         <svg class="chevrons reveal" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true">
-          <path d="M4 3 L23 12 L4 21 L11 12 Z"/><path d="M25 3 L44 12 L25 21 L32 12 Z"/>
+          <path d="M3 5 L23 12 L3 19 L10 12 Z"/><path d="M25 5 L45 12 L25 19 L32 12 Z"/>
         </svg>
         <p class="kicker reveal" style="margin-top:1rem">Diferenciais</p>
         <h2 class="reveal">Diferenciais da Árpoa</h2>
@@ -571,14 +574,14 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;}
       </div>
       <!-- PLACEHOLDER: substituir pelos logos/nomes reais das empresas do grupo -->
       <div class="logo-wall">
-        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M4 3 L23 12 L4 21 L11 12 Z"/><path d="M25 3 L44 12 L25 21 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
-        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M4 3 L23 12 L4 21 L11 12 Z"/><path d="M25 3 L44 12 L25 21 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
-        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M4 3 L23 12 L4 21 L11 12 Z"/><path d="M25 3 L44 12 L25 21 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
-        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M4 3 L23 12 L4 21 L11 12 Z"/><path d="M25 3 L44 12 L25 21 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
-        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M4 3 L23 12 L4 21 L11 12 Z"/><path d="M25 3 L44 12 L25 21 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
-        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M4 3 L23 12 L4 21 L11 12 Z"/><path d="M25 3 L44 12 L25 21 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
-        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M4 3 L23 12 L4 21 L11 12 Z"/><path d="M25 3 L44 12 L25 21 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
-        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M4 3 L23 12 L4 21 L11 12 Z"/><path d="M25 3 L44 12 L25 21 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M3 5 L23 12 L3 19 L10 12 Z"/><path d="M25 5 L45 12 L25 19 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M3 5 L23 12 L3 19 L10 12 Z"/><path d="M25 5 L45 12 L25 19 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M3 5 L23 12 L3 19 L10 12 Z"/><path d="M25 5 L45 12 L25 19 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M3 5 L23 12 L3 19 L10 12 Z"/><path d="M25 5 L45 12 L25 19 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M3 5 L23 12 L3 19 L10 12 Z"/><path d="M25 5 L45 12 L25 19 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M3 5 L23 12 L3 19 L10 12 Z"/><path d="M25 5 L45 12 L25 19 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M3 5 L23 12 L3 19 L10 12 Z"/><path d="M25 5 L45 12 L25 19 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
+        <div class="logo-tile reveal"><svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M3 5 L23 12 L3 19 L10 12 Z"/><path d="M25 5 L45 12 L25 19 L32 12 Z"/></svg><span>Empresa do grupo</span></div>
       </div>
     </div>
   </section>
@@ -628,7 +631,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;}
     <div class="footer-top">
       <a class="brand" href="#inicio" aria-label="Árpoa Capital">
         <span class="word"><b>árpoa</b><span>capital</span></span>
-        <svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M4 3 L23 12 L4 21 L11 12 Z"/><path d="M25 3 L44 12 L25 21 L32 12 Z"/></svg>
+        <svg class="chevrons" viewBox="0 0 48 24" fill="currentColor" aria-hidden="true"><path d="M3 5 L23 12 L3 19 L10 12 Z"/><path d="M25 5 L45 12 L25 19 L32 12 Z"/></svg>
       </a>
       <nav class="footer-nav" aria-label="Rodapé">
         <a href="#quem-somos">Quem somos</a>
