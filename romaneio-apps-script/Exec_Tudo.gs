@@ -35,19 +35,21 @@ function fun1() {
 
 /**
  * Chamada pelo DialogoUpload.html depois que o usuário clica em "Processar arquivo".
- * Faz backup, prepara o romaneio, importa o Excel enviado e DEVOLVE o preview do PDF.
+ * Faz backup, prepara o romaneio e importa o Excel enviado.
  *
- * IMPORTANTE: não abre um segundo diálogo. O Apps Script não abre um modal por cima
- * de outro modal de forma confiável quando a chamada parte de dentro de um diálogo.
- * Por isso a própria janela do DialogoUpload troca de tela e mostra as opções finais
- * (Visualizar / Concluir / Cancelar) usando este preview.
+ * NÃO retorna o preview e NÃO abre outro diálogo: a própria janela do DialogoUpload
+ * troca de tela (Visualizar / Concluir / Cancelar). O botão "Visualizar" gera o PDF
+ * sob demanda chamando getPdfPreviewData() de novo. Assim o fluxo não depende de
+ * valor de retorno nem de abrir um segundo modal (o que travava depois do clique).
  */
 function processarComArquivo(arquivo) {
+  Logger.log('processarComArquivo: início');
   criarBackupBaseExcel();
+  Logger.log('processarComArquivo: backup ok');
   prepararRomaneio();
+  Logger.log('processarComArquivo: romaneio ok');
   importarExcelDoUpload(arquivo);
-
-  return getPdfPreviewData();
+  Logger.log('processarComArquivo: import ok — fim');
 }
 
 function abrirDialogoFinal(pdfBase64) {

@@ -70,7 +70,6 @@
       var telaFinal = document.getElementById('tela-final');
 
       var arquivoSelecionado = null;   // arquivo carregado, aguardando o botão
-      var pdfBase64 = null;            // preview do PDF, para o botão "Visualizar"
 
       // ---------- TELA 1: carregar e processar ----------
 
@@ -135,8 +134,8 @@
         status.textContent = '⏳ Processando... isso pode levar alguns segundos.';
 
         google.script.run
-          .withSuccessHandler(function(preview) {
-            pdfBase64 = preview.base64;
+          .withSuccessHandler(function() {
+            // Sucesso: mostra a TELA 2. Não depende de valor de retorno.
             telaUpload.style.display = 'none';
             telaFinal.style.display = 'block';
             status.textContent = '';
@@ -165,12 +164,23 @@
       }
 
       function visualizar() {
-        try {
-          var url = URL.createObjectURL(base64ToBlob(pdfBase64, 'application/pdf'));
-          window.open(url, '_blank');
-        } catch (e) {
-          alert('Não foi possível abrir o PDF.');
-        }
+        status.style.color = '#333';
+        status.textContent = '⏳ Gerando visualização do PDF...';
+        google.script.run
+          .withSuccessHandler(function(preview) {
+            status.textContent = '';
+            try {
+              var url = URL.createObjectURL(base64ToBlob(preview.base64, 'application/pdf'));
+              window.open(url, '_blank');
+            } catch (e) {
+              alert('Não foi possível abrir o PDF.');
+            }
+          })
+          .withFailureHandler(function(erro) {
+            status.textContent = '';
+            alert((erro && erro.message) ? erro.message : erro);
+          })
+          .getPdfPreviewData();
       }
 
       function mostrarLoading(texto) {
