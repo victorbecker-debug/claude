@@ -1,75 +1,53 @@
-# Romaneio - Contas a pagar (versão com upload de arquivo)
+# Romaneio - Contas a pagar (upload por arrastar → Z1)
 
 Código do Google Apps Script para gerar romaneios/PDFs de "Contas a pagar".
 
-Esta versão substitui o fluxo antigo — em que era preciso **colar o link** do
-Excel na célula `Z1` — por um fluxo de **upload (arrastar e soltar)** do arquivo.
-
-Os arquivos aqui espelham a estrutura do projeto no editor do Apps Script, para
-você substituir **arquivo por arquivo** (não cole tudo em um `.gs` só, senão as
-funções ficam duplicadas e o projeto quebra).
+Esta versão é o **código original, intacto**, com **uma única adição**: em vez de
+colar o link do Excel na célula `Z1` na mão, você arrasta o arquivo num diálogo.
+O diálogo faz o upload do Excel para o seu Drive e escreve o link dele na `Z1`.
+A partir daí o fluxo é **exatamente o original** (`fun1 → executarTudo →
+importarexcel` lê a `Z1`).
 
 ## Arquivos
 
-| Neste repositório | No editor do Apps Script | Papel |
-|---|---|---|
-| `Código.gs` | `Código.gs` | Menu, backup da "Base Excel" e importação por upload. |
-| `PDF.gs` | `PDF.gs` | Geração do PDF a partir da aba "PDF". |
-| `Exec_Tudo.gs` | `Exec_Tudo.gs` | Orquestração do processo e romaneio. |
-| `Append_Replace.gs` | `Append/ Replace.gs` | Copiar/colar entre planilhas (aba "Referência"). |
-| `DialogoUpload.html` | `DialogoUpload` (**novo**) | Diálogo de arrastar e soltar o Excel. |
-| `DialogoFinal.html` | `DialogoFinal` | Diálogo final (Visualizar/Concluir/Cancelar). |
-
-> Obs.: o arquivo `Append/ Replace.gs` tem uma barra no nome dentro do Apps
-> Script; no repositório ele vira `Append_Replace.gs` porque a barra não é
-> permitida em nome de arquivo. O conteúdo é o mesmo.
-
-## O que mudou (e onde)
-
-| Arquivo | Mudança |
+| Arquivo | Papel |
 |---|---|
-| `Código.gs` | `onOpen()` sem o item "Inserir link do Excel"; `importarexcel()` virou `importarExcelDoUpload(arquivo)`; removidas `inserirLinkExcel()`, `extrairIdDoDrive()` e a leitura de `Z1`. |
-| `Exec_Tudo.gs` | `fun1()` abre o `DialogoUpload`; `executarTudo()` virou `processarComArquivo(arquivo)`; corrigido o nome da propriedade em `restaurarB6Romaneio` (`romaneio_B6_anterior`). |
-| `DialogoUpload.html` | Arquivo novo. |
-| `PDF.gs`, `Append_Replace.gs`, `DialogoFinal.html` | Sem alterações. |
+| `Codigo.gs` | Todo o código (original + as duas funções novas do upload). |
+| `DialogoDrop.html` | **Novo** — diálogo de arrastar o Excel (salva no Drive e grava a Z1). |
+| `DialogoFinal.html` | Diálogo final do fluxo original (Visualizar/Concluir/Cancelar). |
 
-## Fluxo resumido
+## O que foi adicionado ao código original
 
-```
-Menu "Gerar PDF - Contas a pagar"
-  └─ fun1()  (confirma e abre o diálogo de upload)
-       └─ DialogoUpload.html
-            ├─ TELA 1: arrastar/soltar o Excel → clicar "Processar arquivo"
-            │     └─ processarComArquivo(arquivo)
-            │          ├─ criarBackupBaseExcel()
-            │          ├─ prepararRomaneio()
-            │          ├─ importarExcelDoUpload(arquivo)
-            │          └─ return getPdfPreviewData()
-            └─ TELA 2 (mesma janela): Visualizar / Concluir / Cancelar
-                  ├─ concluirOperacao()
-                  └─ cancelarOperacao()
-```
+- `onOpen()`: o menu ganhou o item **"Enviar arquivo Excel (arrastar)"**
+  (no lugar do antigo "Inserir link do Excel").
+- `enviarArquivoExcel()`: abre o diálogo `DialogoDrop`.
+- `salvarUploadEmZ1(arquivo)`: recebe os bytes do arquivo, salva o Excel no
+  Drive com `DriveApp.createFile` e escreve `file.getUrl()` na célula `Z1`.
 
-> O fluxo usa **um único diálogo** (`DialogoUpload`), que troca de tela após
-> processar. O `DialogoFinal.html` **não é mais usado** — o Apps Script não abre
-> um modal por cima de outro de forma confiável quando a chamada parte de dentro
-> de um diálogo. Pode manter o arquivo `DialogoFinal` no projeto (não atrapalha)
-> ou removê-lo.
+Nada mais foi alterado: `importarexcel()`, `executarTudo()`, o romaneio, o PDF e
+o Append/Replace continuam exatamente como no original.
 
-## Como instalar no projeto Apps Script
+## Como usar
 
-1. Abra a planilha → **Extensões → Apps Script**.
-2. Substitua o conteúdo de `Código.gs` e `Exec_Tudo.gs` pelos daqui.
-   (Não precisa mexer em `PDF.gs`, `Append/ Replace.gs` e `DialogoFinal`.)
-3. Crie um arquivo HTML novo (**+ → HTML**) chamado exatamente `DialogoUpload`
-   e cole o conteúdo de `DialogoUpload.html`.
+1. Menu **PDF - Contas a pagar → Enviar arquivo Excel (arrastar)**.
+2. Arraste (ou selecione) o `.xlsx` → clique em **Enviar arquivo**.
+   O link é gravado na `Z1` e o diálogo fecha.
+3. Menu **PDF - Contas a pagar → Gerar PDF - Contas a pagar** → segue o fluxo
+   original (backup → romaneio → importa da `Z1` → diálogo final).
+
+## Como instalar
+
+1. **Extensões → Apps Script**.
+2. Apague os arquivos de código antigos e crie um arquivo `Codigo.gs` com o
+   conteúdo daqui (assim não sobra função duplicada).
+3. Crie os arquivos HTML (**+ → HTML**) com os nomes exatos `DialogoDrop` e
+   `DialogoFinal`.
 4. Confirme que o serviço avançado **Drive API** está ativado
-   (Serviços → Drive API), pois `Drive.Files.create` é usado na conversão.
-5. Recarregue a planilha para o menu `PDF - Contas a pagar` aparecer.
+   (Serviços → Drive API) — usado por `importarexcel` na conversão.
+5. Recarregue a planilha.
 
-## Observações
+## Observação
 
-- O arquivo Google Sheets temporário criado na conversão é enviado para a
-  lixeira automaticamente ao final da importação (`finally`).
-- O limite prático de tamanho para upload via `google.script.run` gira em torno
-  de ~50 MB; arquivos de contas a pagar normais ficam muito abaixo disso.
+Cada envio cria um novo arquivo Excel no seu Drive (raiz). Se quiser guardá-los
+numa pasta específica, dá para trocar `DriveApp.createFile(blob)` por
+`DriveApp.getFolderById("ID_DA_PASTA").createFile(blob)` em `salvarUploadEmZ1`.

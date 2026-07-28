@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
+      #zona {
+        border: 2px dashed #1a73e8; border-radius: 8px; padding: 40px 20px;
+        color: #1a73e8; cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease;
+      }
+      #zona.hover { background: #e8f0fe; }
+      #zona.carregado { border-color: #188038; color: #188038; background: #e6f4ea; }
+      #nomeArquivo { margin-top: 12px; font-size: 13px; color: #333; word-break: break-all; min-height: 18px; }
+      #btnEnviar {
+        margin-top: 18px; padding: 11px 20px; border: none; border-radius: 6px;
+        font-size: 14px; color: white; background: #188038; cursor: pointer;
+      }
+      #btnEnviar:disabled { background: #b7c2ba; cursor: not-allowed; }
+      #status { margin-top: 16px; font-weight: bold; color: #333; min-height: 20px; }
+      .dica { margin-top: 10px; font-size: 12px; color: #666; }
+    </style>
+  </head>
+  <body>
+    <div id="zona">
+      📄 Arraste o arquivo Excel aqui<br>
+      <small>ou clique para selecionar</small>
+    </div>
+    <input type="file" id="input" accept=".xlsx,.xls" style="display:none">
+    <div id="nomeArquivo"></div>
+    <button id="btnEnviar" disabled onclick="enviar()">Enviar arquivo</button>
+    <div id="status"></div>
+    <div class="dica">Depois de enviar, use o menu <b>PDF - Contas a pagar → Gerar PDF</b>.</div>
+
+    <script>
+      var zona = document.getElementById('zona');
+      var input = document.getElementById('input');
+      var status = document.getElementById('status');
+      var nomeArquivo = document.getElementById('nomeArquivo');
+      var btnEnviar = document.getElementById('btnEnviar');
+
+      var arquivoSelecionado = null;
+
+      zona.addEventListener('click', function() { input.click(); });
+      zona.addEventListener('dragover', function(e) { e.preventDefault(); zona.classList.add('hover'); });
+      zona.addEventListener('dragleave', function() { zona.classList.remove('hover'); });
+      zona.addEventListener('drop', function(e) {
+        e.preventDefault(); zona.classList.remove('hover');
+        if (e.dataTransfer.files.length > 0) { carregar(e.dataTransfer.files[0]); }
+      });
+      input.addEventListener('change', function() {
+        if (input.files.length > 0) { carregar(input.files[0]); }
+      });
+
+      // Só carrega o arquivo em memória e habilita o botão
+      function carregar(file) {
+        if (!file) return;
+        var nomeLower = file.name.toLowerCase();
+        if (!nomeLower.endsWith('.xlsx') && !nomeLower.endsWith('.xls')) {
+          arquivoSelecionado = null; btnEnviar.disabled = true;
+          zona.classList.remove('carregado');
+          status.style.color = '#d93025';
+          status.textContent = 'Selecione um arquivo Excel (.xlsx ou .xls).';
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function() {
+          arquivoSelecionado = {
+            nome: file.name,
+            mimeType: file.type || 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            bytes: reader.result.split(',')[1]
+          };
+          zona.classList.add('carregado');
+          zona.innerHTML = '✅ Arquivo carregado<br><small>clique em "Enviar arquivo"</small>';
+          nomeArquivo.textContent = file.name;
+          btnEnviar.disabled = false;
+          status.style.color = '#333'; status.textContent = '';
+        };
+        reader.onerror = function() {
+          arquivoSelecionado = null; btnEnviar.disabled = true;
+          status.style.color = '#d93025';
+          status.textContent = 'Não foi possível ler o arquivo.';
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // Envia os bytes ao servidor: salva no Drive e grava o link na Z1
+      function enviar() {
+        if (!arquivoSelecionado) {
+          status.style.color = '#d93025'; status.textContent = 'Nenhum arquivo carregado.'; return;
+        }
+        btnEnviar.disabled = true;
+        zona.style.pointerEvents = 'none'; zona.style.opacity = '0.6';
+        status.style.color = '#333';
+        status.textContent = '⏳ Enviando para o Drive...';
+
+        google.script.run
+          .withSuccessHandler(function(url) {
+            status.style.color = '#188038';
+            status.textContent = '✅ Arquivo salvo! Link gravado na Z1.';
+            setTimeout(function() {
+              google.script.host.close();
+            }, 900);
+          })
+          .withFailureHandler(function(erro) {
+            var msg = (erro && erro.message) ? erro.message : erro;
+            status.style.color = '#d93025';
+            status.textContent = 'Erro: ' + msg;
+            btnEnviar.disabled = false;
+            zona.style.pointerEvents = 'auto'; zona.style.opacity = '1';
+            alert('Erro ao enviar: ' + msg);
+          })
+          .salvarUploadEmZ1(arquivoSelecionado);
+      }
+    </script>
+  </body>
+</html>
