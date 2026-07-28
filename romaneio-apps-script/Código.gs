@@ -83,8 +83,12 @@ function importarExcelDoUpload(arquivo) {
     if (!abaDestino) throw new Error("A aba 'Base Excel' não foi encontrada.");
 
     if (!arquivo || !arquivo.bytes) {
-      throw new Error("Nenhum arquivo foi recebido para importação.");
+      throw new Error("Nenhum arquivo foi recebido para importação (bytes vazios).");
     }
+
+    Logger.log("importarExcelDoUpload: nome=" + arquivo.nome +
+               " mime=" + arquivo.mimeType +
+               " tamanhoBase64=" + arquivo.bytes.length);
 
     // Monta o blob a partir dos bytes enviados (base64) pelo navegador
     var bytes = Utilities.base64Decode(arquivo.bytes);
@@ -93,30 +97,51 @@ function importarExcelDoUpload(arquivo) {
     var nome = arquivo.nome || "Excel importado";
     var blob = Utilities.newBlob(bytes, mimeType, nome);
 
-    // Converte o Excel em um arquivo Google Sheets temporário
+    // Converte o Excel em um arquivo Google Sheets temporário.
+    // "name" (Drive API v3) e "title" (v2) juntos, para funcionar nas duas versões.
     var resource = {
+      name: nome,
       title: nome,
       mimeType: MimeType.GOOGLE_SHEETS
     };
 
     googleSheetFile = Drive.Files.create(resource, blob);
-    Logger.log('Arquivo Excel convertido em Google Sheets: ' + googleSheetFile.id);
+    Logger.log('Convertido para Google Sheets: ' + googleSheetFile.id);
 
-    Utilities.sleep(10000);
-
+    // Espera a conversão FICAR PRONTA de verdade (em vez de um sleep fixo de 10s).
+    // Reabre a planilha até ela ter dados, com no máximo ~30s de espera.
     var planilhaSheets = SpreadsheetApp.openById(googleSheetFile.id);
     var abaOrigem = planilhaSheets.getSheets()[0];
+    var tentativas = 0;
+    while (abaOrigem.getLastRow() === 0 && tentativas < 15) {
+      Utilities.sleep(2000);
+      planilhaSheets = SpreadsheetApp.openById(googleSheetFile.id);
+      abaOrigem = planilhaSheets.getSheets()[0];
+      tentativas++;
+    }
+
+    Logger.log("Origem convertida: linhas=" + abaOrigem.getLastRow() +
+               " colunas=" + abaOrigem.getLastColumn() +
+               " (esperas=" + tentativas + ")");
+
+    if (abaOrigem.getLastRow() === 0) {
+      throw new Error("A conversão do Excel não trouxe dados (planilha vazia). " +
+        "Confirme que o arquivo enviado é um Excel válido e com conteúdo.");
+    }
 
     // Ajusta as linhas acima do cabeçalho
     ajustarLinhasAcimaDoCabecalho(abaOrigem);
 
     var dados = abaOrigem.getDataRange().getValues();
+    Logger.log("Vou colar na Base Excel: linhas=" + dados.length +
+               " colunas=" + (dados[0] ? dados[0].length : 0));
 
     abaDestino.clearContents();
     abaDestino.getRange(1, 1, dados.length, dados[0].length).setValues(dados);
+    Logger.log("Base Excel atualizada com os dados do arquivo enviado.");
 
   } catch (erro) {
-    Logger.log("Erro: " + erro.stack);
+    Logger.log("ERRO importarExcelDoUpload: " + erro.stack);
     throw erro;
 
   } finally {
