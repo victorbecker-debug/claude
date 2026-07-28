@@ -33,9 +33,14 @@
     <div class="dica">Depois de enviar, use o menu <b>PDF - Contas a pagar → Gerar PDF</b>.</div>
 
     <script>
+      // IMPORTANTE: não usar o nome "status" para variável — é uma propriedade
+      // nativa reservada do navegador (window.status, a antiga barra de status).
+      // Guardar um elemento nela faz o navegador convertê-lo em texto por baixo
+      // dos panos, e todo o script quebra silenciosamente (só aparece erro no
+      // console: "Cannot set properties of undefined"). Por isso usamos "statusEl".
       var zona = document.getElementById('zona');
       var input = document.getElementById('input');
-      var status = document.getElementById('status');
+      var statusEl = document.getElementById('status');
       var nomeArquivo = document.getElementById('nomeArquivo');
       var btnEnviar = document.getElementById('btnEnviar');
 
@@ -59,8 +64,8 @@
         if (!nomeLower.endsWith('.xlsx') && !nomeLower.endsWith('.xls')) {
           arquivoSelecionado = null; btnEnviar.disabled = true;
           zona.classList.remove('carregado');
-          status.style.color = '#d93025';
-          status.textContent = 'Selecione um arquivo Excel (.xlsx ou .xls).';
+          statusEl.style.color = '#d93025';
+          statusEl.textContent = 'Selecione um arquivo Excel (.xlsx ou .xls).';
           return;
         }
         var reader = new FileReader();
@@ -74,12 +79,12 @@
           zona.innerHTML = '✅ Arquivo carregado<br><small>clique em "Enviar arquivo"</small>';
           nomeArquivo.textContent = file.name;
           btnEnviar.disabled = false;
-          status.style.color = '#333'; status.textContent = '';
+          statusEl.style.color = '#333'; statusEl.textContent = '';
         };
         reader.onerror = function() {
           arquivoSelecionado = null; btnEnviar.disabled = true;
-          status.style.color = '#d93025';
-          status.textContent = 'Não foi possível ler o arquivo.';
+          statusEl.style.color = '#d93025';
+          statusEl.textContent = 'Não foi possível ler o arquivo.';
         };
         reader.readAsDataURL(file);
       }
@@ -87,25 +92,25 @@
       // Envia os bytes ao servidor: salva no Drive e grava o link na Z1
       function enviar() {
         if (!arquivoSelecionado) {
-          status.style.color = '#d93025'; status.textContent = 'Nenhum arquivo carregado.'; return;
+          statusEl.style.color = '#d93025'; statusEl.textContent = 'Nenhum arquivo carregado.'; return;
         }
         btnEnviar.disabled = true;
         zona.style.pointerEvents = 'none'; zona.style.opacity = '0.6';
-        status.style.color = '#333';
-        status.textContent = '⏳ Enviando para o Drive...';
+        statusEl.style.color = '#333';
+        statusEl.textContent = '⏳ Enviando para o Drive...';
 
         google.script.run
           .withSuccessHandler(function(url) {
-            status.style.color = '#188038';
-            status.textContent = '✅ Arquivo salvo! Link gravado na Z1.';
+            statusEl.style.color = '#188038';
+            statusEl.textContent = '✅ Arquivo salvo! Link gravado na Z1.';
             setTimeout(function() {
               google.script.host.close();
             }, 900);
           })
           .withFailureHandler(function(erro) {
             var msg = (erro && erro.message) ? erro.message : erro;
-            status.style.color = '#d93025';
-            status.textContent = 'Erro: ' + msg;
+            statusEl.style.color = '#d93025';
+            statusEl.textContent = 'Erro: ' + msg;
             btnEnviar.disabled = false;
             zona.style.pointerEvents = 'auto'; zona.style.opacity = '1';
             alert('Erro ao enviar: ' + msg);
