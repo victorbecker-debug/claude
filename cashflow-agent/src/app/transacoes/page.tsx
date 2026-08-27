@@ -54,40 +54,57 @@ export default function TransacoesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-tight">Transações</h1>
-      <p className="mt-2 text-sm text-foreground/70">
+      <h1 className="serif text-[28px] font-medium text-[var(--ink)]">Transações</h1>
+      <p className="mt-3 text-sm text-[var(--ink-2)]">
         Categorização automática por palavra-chave — ajuste manualmente quando necessário.
       </p>
 
-      <div className="mt-4 overflow-x-auto rounded-lg border border-black/10 dark:border-white/10">
-        <table className="w-full text-sm">
+      <div className="card mt-4 overflow-x-auto px-7 pb-1 pt-2">
+        <table className="w-full min-w-[720px] border-collapse text-sm">
           <thead>
-            <tr className="border-b border-black/10 text-left text-foreground/60 dark:border-white/10">
-              <th className="px-4 py-2 font-medium">Data</th>
-              <th className="px-4 py-2 font-medium">Descrição</th>
-              <th className="px-4 py-2 font-medium">Conta</th>
-              <th className="px-4 py-2 font-medium">Categoria</th>
-              <th className="px-4 py-2 text-right font-medium">Valor</th>
+            <tr>
+              {["Data", "Descrição", "Conta", "Categoria"].map((h) => (
+                <th
+                  key={h}
+                  className="border-b py-3.5 pl-2 text-left text-[11.5px] font-semibold uppercase tracking-wider text-[var(--ink-3)] first:pl-2"
+                  style={{ borderColor: "var(--hairline)" }}
+                >
+                  {h}
+                </th>
+              ))}
+              <th
+                className="border-b py-3.5 pr-2 text-right text-[11.5px] font-semibold uppercase tracking-wider text-[var(--ink-3)]"
+                style={{ borderColor: "var(--hairline)" }}
+              >
+                Valor
+              </th>
             </tr>
           </thead>
           <tbody>
             {transactions?.map((t) => (
-              <tr key={t.id} className="border-b border-black/5 last:border-0 dark:border-white/5">
-                <td className="whitespace-nowrap px-4 py-2 tabular-nums">{dateFmt.format(new Date(t.date))}</td>
-                <td className="px-4 py-2">
+              <tr key={t.id} className="row-hover">
+                <td className="tab whitespace-nowrap border-b py-3.5 pl-2 text-[var(--ink-2)]" style={{ borderColor: "var(--hairline)" }}>
+                  {dateFmt.format(new Date(t.date))}
+                </td>
+                <td className="border-b py-3.5 text-[var(--ink)]" style={{ borderColor: "var(--hairline)" }}>
                   {t.merchant?.displayName ?? t.description}
                   {t.merchant?.isOnline && (
-                    <span className="ml-2 rounded bg-black/5 px-1.5 py-0.5 text-xs text-foreground/60 dark:bg-white/10">
+                    <span
+                      className="ml-2 rounded px-1.5 py-0.5 text-xs text-[var(--ink-3)]"
+                      style={{ background: "rgba(255,255,255,0.06)" }}
+                    >
                       online
                     </span>
                   )}
                 </td>
-                <td className="whitespace-nowrap px-4 py-2 text-foreground/60">{t.account.name}</td>
-                <td className="px-4 py-2">
+                <td className="whitespace-nowrap border-b py-3.5 text-[var(--ink-3)]" style={{ borderColor: "var(--hairline)" }}>
+                  {t.account.name}
+                </td>
+                <td className="border-b py-3.5" style={{ borderColor: "var(--hairline)" }}>
                   <select
                     value={t.category?.id ?? ""}
                     onChange={(e) => handleCategoryChange(t.id, e.target.value)}
-                    className="rounded-md border border-black/15 bg-transparent px-2 py-1 text-xs dark:border-white/20"
+                    className="field rounded-md px-2 py-1 text-xs outline-none"
                     style={{ color: t.category?.color }}
                   >
                     {categories.map((c) => (
@@ -97,18 +114,20 @@ export default function TransacoesPage() {
                     ))}
                   </select>
                   {t.categorySource === "MANUAL" && (
-                    <span className="ml-1 text-xs text-foreground/40" title="Ajustado manualmente">
+                    <span className="ml-1 text-xs text-[var(--ink-3)]" title="Ajustado manualmente">
                       *
                     </span>
                   )}
                 </td>
-                <td className="whitespace-nowrap px-4 py-2 text-right tabular-nums">{currency.format(t.amount)}</td>
+                <td className="mono tab whitespace-nowrap border-b py-3.5 pr-2 text-right text-[var(--ink)]" style={{ borderColor: "var(--hairline)" }}>
+                  {currency.format(t.amount)}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
         {transactions && transactions.length === 0 && (
-          <p className="p-4 text-sm text-foreground/60">Nenhuma transação importada ainda.</p>
+          <p className="p-5 text-sm text-[var(--ink-3)]">Nenhuma transação importada ainda.</p>
         )}
       </div>
     </div>

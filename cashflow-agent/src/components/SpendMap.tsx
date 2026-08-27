@@ -24,17 +24,17 @@ export function SpendMap({ points }: { points: MapPoint[] }) {
   const maxTotal = Math.max(...points.map((p) => p.total), 1);
 
   return (
-    <MapContainer center={center} zoom={points.length ? 11 : 4} style={{ height: "100%", width: "100%" }}>
+    <MapContainer center={center} zoom={points.length ? 11 : 4} style={{ height: "100%", width: "100%", background: "#141416" }}>
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
       />
       {points.map((p) => (
         <CircleMarker
           key={p.id}
           center={[p.lat, p.lng]}
           radius={8 + (p.total / maxTotal) * 20}
-          pathOptions={{ color: "#2a78d6", fillColor: "#2a78d6", fillOpacity: 0.5, weight: 2 }}
+          pathOptions={{ color: "#c7c7cb", fillColor: "#c7c7cb", fillOpacity: 0.45, weight: 2 }}
         >
           <LeafletTooltip>
             <strong>{p.name}</strong>

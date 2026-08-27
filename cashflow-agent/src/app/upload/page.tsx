@@ -73,20 +73,22 @@ export default function UploadPage() {
 
   return (
     <div className="max-w-xl">
-      <h1 className="text-2xl font-semibold tracking-tight">Importar extrato ou fatura</h1>
-      <p className="mt-2 text-sm text-foreground/70">
+      <h1 className="serif text-[28px] font-medium text-[var(--ink)]">Importar extrato ou fatura</h1>
+      <p className="mt-3 text-sm leading-relaxed text-[var(--ink-2)]">
         Exporte o extrato da conta ou a fatura do cartão no site do seu banco (formato CSV ou OFX) e envie aqui.
         As transações são categorizadas automaticamente por palavra-chave do estabelecimento.
       </p>
 
-      <form onSubmit={handleUpload} className="mt-6 space-y-4">
+      <form onSubmit={handleUpload} className="mt-8 space-y-6">
         <div>
-          <label className="block text-sm font-medium">Conta ou cartão</label>
-          <div className="mt-1 flex gap-2">
+          <label className="mb-2 block text-xs font-medium uppercase tracking-wider text-[var(--ink-3)]">
+            Conta ou cartão
+          </label>
+          <div className="flex gap-2.5">
             <select
               value={accountId}
               onChange={(e) => setAccountId(e.target.value)}
-              className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm dark:border-white/20"
+              className="field w-full outline-none"
             >
               {accounts.length === 0 && <option value="">Nenhuma conta cadastrada</option>}
               {accounts.map((a) => (
@@ -98,7 +100,7 @@ export default function UploadPage() {
             <button
               type="button"
               onClick={() => setShowNewAccount((v) => !v)}
-              className="shrink-0 rounded-md border border-black/15 px-3 py-2 text-sm dark:border-white/20"
+              className="btn-secondary shrink-0 px-4 py-2.5 text-sm font-semibold"
             >
               + Nova
             </button>
@@ -106,74 +108,111 @@ export default function UploadPage() {
         </div>
 
         {showNewAccount && (
-          <div className="space-y-3 rounded-md border border-black/10 p-4 dark:border-white/10">
+          <div className="card space-y-4 p-5">
             <div>
-              <label className="block text-sm font-medium">Apelido</label>
+              <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[var(--ink-3)]">
+                Apelido
+              </label>
               <input
                 required
                 value={newAccount.name}
                 onChange={(e) => setNewAccount({ ...newAccount, name: e.target.value })}
                 placeholder="Ex: Cartão principal"
-                className="mt-1 w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm dark:border-white/20"
+                className="field w-full outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Banco</label>
+              <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[var(--ink-3)]">
+                Banco
+              </label>
               <input
                 required
                 value={newAccount.bankName}
                 onChange={(e) => setNewAccount({ ...newAccount, bankName: e.target.value })}
                 placeholder="Ex: Nubank"
-                className="mt-1 w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm dark:border-white/20"
+                className="field w-full outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Tipo</label>
+              <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[var(--ink-3)]">
+                Tipo
+              </label>
               <select
                 value={newAccount.type}
                 onChange={(e) => setNewAccount({ ...newAccount, type: e.target.value as "CHECKING" })}
-                className="mt-1 w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-sm dark:border-white/20"
+                className="field w-full outline-none"
               >
                 <option value="CHECKING">Conta corrente</option>
                 <option value="CREDIT_CARD">Cartão de crédito</option>
               </select>
             </div>
-            <button
-              onClick={handleCreateAccount}
-              className="rounded-md bg-foreground px-3 py-1.5 text-sm text-background"
-            >
+            <button onClick={handleCreateAccount} className="btn-primary px-4 py-2 text-sm font-bold">
               Salvar conta
             </button>
           </div>
         )}
 
         <div>
-          <label className="block text-sm font-medium">Arquivo (CSV ou OFX)</label>
-          <input
-            required
-            type="file"
-            accept=".csv,.ofx,text/csv"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="mt-1 w-full text-sm"
-          />
+          <label className="mb-2 block text-xs font-medium uppercase tracking-wider text-[var(--ink-3)]">
+            Arquivo (CSV ou OFX)
+          </label>
+          <label
+            className="dropzone flex cursor-pointer flex-col items-center rounded-[14px] border-[1.5px] border-dashed px-6 py-10 text-center"
+            style={{ borderColor: "var(--hairline-strong)", background: "var(--panel-2)" }}
+          >
+            <svg
+              width="30"
+              height="30"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#c7c7cb"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mb-3.5"
+            >
+              <path d="M7 18a4 4 0 0 1-1-7.874A5 5 0 0 1 16.9 9.02 4.5 4.5 0 0 1 16.5 18H7Z" />
+              <path d="M12 11v7" />
+              <path d="M9.3 13.6 12 11l2.7 2.6" />
+            </svg>
+            <span className="mb-1 text-[13.5px] text-[var(--ink)]">
+              {file ? file.name : "Nenhum arquivo selecionado"}
+            </span>
+            <span className="text-xs text-[var(--ink-3)]">Arraste um arquivo ou clique para selecionar</span>
+            <input
+              required
+              type="file"
+              accept=".csv,.ofx,text/csv"
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              className="hidden"
+            />
+          </label>
         </div>
 
         <button
           type="submit"
           disabled={!file || !accountId || status.kind === "loading"}
-          className="rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background disabled:opacity-50"
+          className="btn-primary px-7 py-3.5 text-sm font-bold"
         >
           {status.kind === "loading" ? "Importando…" : "Importar"}
         </button>
       </form>
 
       {status.kind === "success" && (
-        <p className="mt-4 rounded-md bg-green-500/10 px-3 py-2 text-sm text-green-700 dark:text-green-400">
-          {status.message}
-        </p>
+        <div
+          className="mt-6 border-t pt-5"
+          style={{ borderColor: "var(--hairline)" }}
+        >
+          <div className="flex items-center gap-2.5 text-sm" style={{ color: "#7fbf8f" }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            {status.message}
+          </div>
+        </div>
       )}
       {status.kind === "error" && (
-        <p className="mt-4 rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-700 dark:text-red-400">
+        <p className="mt-6 rounded-md px-3 py-2.5 text-sm" style={{ background: "rgba(224,102,95,0.1)", color: "#e0665f" }}>
           {status.message}
         </p>
       )}

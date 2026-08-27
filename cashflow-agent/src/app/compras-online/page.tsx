@@ -26,44 +26,58 @@ export default function ComprasOnlinePage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-tight">Compras online</h1>
-      <p className="mt-2 text-sm text-foreground/70">
+      <h1 className="serif text-[28px] font-medium text-[var(--ink)]">Compras online</h1>
+      <p className="mt-3 max-w-xl text-sm leading-relaxed text-[var(--ink-2)]">
         Lojas de internet identificadas nas transações (sem localização física — por isso ficam separadas do
         mapa).
       </p>
 
       {rows && rows.length > 0 && (
-        <p className="mt-4 text-sm text-foreground/60">
-          Total: <span className="font-medium text-foreground">{currency.format(total)}</span> em {rows.length}{" "}
-          loja(s)
+        <p className="mt-5 text-[13px] text-[var(--ink-2)]">
+          Total: <span className="mono font-semibold text-[var(--ink)]">{currency.format(total)}</span> em{" "}
+          {rows.length} loja(s)
         </p>
       )}
 
-      <div className="mt-4 overflow-x-auto rounded-lg border border-black/10 dark:border-white/10">
-        <table className="w-full text-sm">
+      <div className="card mt-4 px-7 pb-1 pt-2">
+        <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="border-b border-black/10 text-left text-foreground/60 dark:border-white/10">
-              <th className="px-4 py-2 font-medium">Loja</th>
-              <th className="px-4 py-2 font-medium">Compras</th>
-              <th className="px-4 py-2 font-medium">Última compra</th>
-              <th className="px-4 py-2 text-right font-medium">Total gasto</th>
+            <tr>
+              <th className="border-b py-3.5 pl-2 text-left text-[11.5px] font-semibold uppercase tracking-wider text-[var(--ink-3)]" style={{ borderColor: "var(--hairline)" }}>
+                Loja
+              </th>
+              <th className="border-b py-3.5 text-left text-[11.5px] font-semibold uppercase tracking-wider text-[var(--ink-3)]" style={{ borderColor: "var(--hairline)" }}>
+                Compras
+              </th>
+              <th className="border-b py-3.5 text-left text-[11.5px] font-semibold uppercase tracking-wider text-[var(--ink-3)]" style={{ borderColor: "var(--hairline)" }}>
+                Última compra
+              </th>
+              <th className="border-b py-3.5 pr-2 text-right text-[11.5px] font-semibold uppercase tracking-wider text-[var(--ink-3)]" style={{ borderColor: "var(--hairline)" }}>
+                Total gasto
+              </th>
             </tr>
           </thead>
           <tbody>
             {rows?.map((r) => (
-              <tr key={r.id} className="border-b border-black/5 last:border-0 dark:border-white/5">
-                <td className="px-4 py-2">{r.name}</td>
-                <td className="px-4 py-2 tabular-nums">{r.count}</td>
-                <td className="px-4 py-2 tabular-nums">
+              <tr key={r.id} className="row-hover">
+                <td className="border-b py-4 pl-2 font-medium text-[var(--ink)]" style={{ borderColor: "var(--hairline)" }}>
+                  {r.name}
+                </td>
+                <td className="tab border-b py-4 text-[var(--ink-2)]" style={{ borderColor: "var(--hairline)" }}>
+                  {r.count}
+                </td>
+                <td className="tab border-b py-4 text-[var(--ink-2)]" style={{ borderColor: "var(--hairline)" }}>
                   {r.lastPurchase ? dateFmt.format(new Date(r.lastPurchase)) : "—"}
                 </td>
-                <td className="px-4 py-2 text-right tabular-nums">{currency.format(r.total)}</td>
+                <td className="mono tab border-b py-4 pr-2 text-right text-[var(--ink)]" style={{ borderColor: "var(--hairline)" }}>
+                  {currency.format(r.total)}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
         {rows && rows.length === 0 && (
-          <p className="p-4 text-sm text-foreground/60">Nenhuma compra online identificada ainda.</p>
+          <p className="p-5 text-sm text-[var(--ink-3)]">Nenhuma compra online identificada ainda.</p>
         )}
       </div>
     </div>

@@ -26,21 +26,17 @@ const STEPS = [
 export default function Home() {
   return (
     <div>
-      <h1 className="text-3xl font-semibold tracking-tight">Fluxo de Caixa</h1>
-      <p className="mt-2 max-w-xl text-foreground/70">
+      <h1 className="serif text-4xl font-medium tracking-tight text-[var(--ink)]">Fluxo de Caixa</h1>
+      <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-[var(--ink-2)]">
         Seu fluxo de caixa pessoal por estabelecimento e categoria, com histórico comparativo e mapa de gastos —
         a partir dos extratos que você importa.
       </p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      <div className="mt-10 grid gap-5 sm:grid-cols-2">
         {STEPS.map((step) => (
-          <Link
-            key={step.href}
-            href={step.href}
-            className="rounded-lg border border-black/10 p-5 transition-colors hover:border-black/25 dark:border-white/10 dark:hover:border-white/30"
-          >
-            <h2 className="font-medium">{step.title}</h2>
-            <p className="mt-1 text-sm text-foreground/60">{step.description}</p>
+          <Link key={step.href} href={step.href} className="row-hover card block p-6">
+            <h2 className="font-semibold text-[var(--ink)]">{step.title}</h2>
+            <p className="mt-1.5 text-sm text-[var(--ink-2)]">{step.description}</p>
           </Link>
         ))}
       </div>

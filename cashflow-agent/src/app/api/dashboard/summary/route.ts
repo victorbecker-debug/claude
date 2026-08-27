@@ -10,7 +10,7 @@ function monthKey(date: Date) {
 // colors stop being reliably distinguishable — fold the long tail into an
 // "Outros" bucket rather than generating more hues.
 const MAX_CHART_CATEGORIES = 7;
-const OUTROS_COLOR = "#898781";
+const OUTROS_COLOR = "#4a4a4d";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
