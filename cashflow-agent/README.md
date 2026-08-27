@@ -20,22 +20,41 @@ categorização, geocodificação ou nos dashboards.
 ## Stack
 
 - **Next.js 16** (App Router) + TypeScript + Tailwind
-- **Prisma + SQLite** (fácil trocar para Postgres depois — só mudar a
-  `DATABASE_URL` e o `provider` em `prisma/schema.prisma`)
-- **Recharts** para os gráficos, **React Leaflet** para o mapa
+- **Prisma + PostgreSQL** (funciona com qualquer Postgres — [Neon](https://neon.tech)
+  tem um tier gratuito que serve bem pra uso pessoal)
+- **Recharts** para os gráficos, **React Leaflet** para o mapa (tiles escuros via CartoDB)
 - **Nominatim (OpenStreetMap)** para geocodificação, gratuito
 
-## Como rodar
+## Como rodar localmente
+
+Precisa de um banco Postgres — o jeito mais rápido é criar um gratuito no
+[Neon](https://neon.tech) (veja o passo a passo de deploy abaixo, os
+primeiros passos são os mesmos).
 
 ```bash
 npm install
-cp .env.example .env
-npx prisma migrate dev
-npm run db:seed   # categorias padrão + regras de palavra-chave
+cp .env.example .env   # cole a connection string do seu Postgres em DATABASE_URL
+npx prisma generate
+npx prisma db push       # cria as tabelas
+npm run db:seed          # categorias padrão + regras de palavra-chave
 npm run dev
 ```
 
 Abra `http://localhost:3000`.
+
+## Deploy (Vercel + Neon, gratuito)
+
+Veja o passo a passo completo no histórico da conversa com o Claude, ou:
+
+1. Crie um banco gratuito em [neon.tech](https://neon.tech) e copie a
+   connection string (formato `postgresql://...`).
+2. Em [vercel.com](https://vercel.com), importe este repositório do GitHub.
+3. Configure o **Root Directory** do projeto na Vercel como `cashflow-agent`
+   (o repositório tem vários projetos, este é só uma pasta dele).
+4. Adicione a variável de ambiente `DATABASE_URL` na Vercel com a connection
+   string do Neon.
+5. Deploy. O `build` do projeto já roda `prisma db push` e o seed de
+   categorias automaticamente — não precisa rodar nada manualmente.
 
 ## Fluxo
 
