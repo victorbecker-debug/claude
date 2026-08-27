@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// A bank account or credit card that transactions belong to.
+model Account {
+  id           String        @id @default(cuid())
+  name         String
+  bankName     String
+  type         AccountType
+  createdAt    DateTime      @default(now())
+  transactions Transaction[]
+  imports      ImportBatch[]
+}
+
+enum AccountType {
+  CHECKING
+  CREDIT_CARD
+}
+
+// One file upload (a statement or invoice export) that produced transactions.
+model ImportBatch {
+  id           String        @id @default(cuid())
+  account      Account       @relation(fields: [accountId], references: [id])
+  accountId    String
+  filename     String
+  format       ImportFormat
+  importedAt   DateTime      @default(now())
+  transactions Transaction[]
+}
+
+enum ImportFormat {
+  CSV
+  OFX
+}
+
+// A normalized establishment/merchant, deduplicated across transactions so it
+// only needs to be geocoded once.
+model Merchant {
+  id            String        @id @default(cuid())
+  normalizedName String       @unique
+  displayName   String
+  city          String?
+  state         String?
+  country       String?
+  latitude      Float?
+  longitude     Float?
+  geocodedAt    DateTime?
+  isOnline      Boolean       @default(false)
+  transactions  Transaction[]
+}
+
+model Category {
+  id            String         @id @default(cuid())
+  name          String         @unique
+  color         String
+  rules         CategoryRule[]
+  transactions  Transaction[]
+}
+
+// Keyword -> category mapping used by the auto-categorization engine.
+model CategoryRule {
+  id         String   @id @default(cuid())
+  keyword    String
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+}
+
+model Transaction {
+  id            String       @id @default(cuid())
+  account       Account      @relation(fields: [accountId], references: [id])
+  accountId     String
+  importBatch   ImportBatch? @relation(fields: [importBatchId], references: [id])
+  importBatchId String?
+  date          DateTime
+  description   String
+  amount        Float
+  merchant      Merchant?    @relation(fields: [merchantId], references: [id])
+  merchantId    String?
+  category      Category?    @relation(fields: [categoryId], references: [id])
+  categoryId    String?
+  categorySource CategorySource @default(AUTO)
+  createdAt     DateTime     @default(now())
+
+  @@index([date])
+  @@index([merchantId])
+  @@index([categoryId])
+}
+
+enum CategorySource {
+  AUTO
+  MANUAL
+}
